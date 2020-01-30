@@ -11,13 +11,14 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/animals",
+					"raw": "http://localhost:8080/api/animals",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
+						"api",
 						"animals"
 					]
 				}
@@ -30,13 +31,14 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/animal/23",
+					"raw": "http://localhost:8080/api/animal/23",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
+						"api",
 						"animal",
 						"23"
 					]
@@ -50,13 +52,14 @@
 				"method": "PUT",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/animal/23",
+					"raw": "http://localhost:8080/api/animal/23",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
+						"api",
 						"animal",
 						"23"
 					]
@@ -70,13 +73,14 @@
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/animal/23",
+					"raw": "http://localhost:8080/api/animal/23",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
+						"api",
 						"animal",
 						"23"
 					]
@@ -106,18 +110,49 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/animal",
+					"raw": "http://localhost:8080/api/animal",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
+						"api",
 						"animal"
 					]
 				}
 			},
 			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "cd25b643-bd77-4388-9c4f-ed82bf46aaa6",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "47e4a6a5-6b31-4613-82f5-a62cd8648f33",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "388a8cb9-4ad5-4faa-9430-89c131a29607",
+			"key": "api",
+			"value": "http://localhost:8080/api",
+			"type": "string"
 		}
 	],
 	"protocolProfileBehavior": {}
