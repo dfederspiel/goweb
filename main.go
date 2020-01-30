@@ -1,5 +1,7 @@
 package main
 
+import "github.com/gin-gonic/gin"
+
 /*
 * What is a package?
 * Wow, cool! So, then.. where are they how do I reference them?
@@ -9,5 +11,7 @@ package main
  */
 
 func main() {
-	StartServer()
+	g := gin.Default()
+	RegisterRoutes(&g.RouterGroup)
+	_ = g.Run()
 }
