@@ -1,11 +1,15 @@
-package main
+package services
 
 import (
 	"fmt"
-
 	"github.com/gin-gonic/gin"
-	"rsi.com/go-training/services"
 )
+
+type Animal struct {
+	Name string `json:"name"`
+	Age  int    `json:"age"`
+	Legs bool   `json:"legs"`
+}
 
 /*StartServer sets up and runs our web server
  */
@@ -20,7 +24,7 @@ func RegisterRoutes(router *gin.RouterGroup) {
 
 func CreateAnimal() func(c *gin.Context) {
 	return func(c *gin.Context) {
-		var a services.Animal
+		var a Animal
 		_ = c.BindJSON(&a)
 
 		a.Name += " (Updated)"

@@ -1,6 +1,9 @@
 package main
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/gin-gonic/gin"
+	"rsi.com/go-training/services"
+)
 
 /*
 * What is a package?
@@ -12,6 +15,6 @@ import "github.com/gin-gonic/gin"
 
 func main() {
 	g := gin.Default()
-	RegisterRoutes(&g.RouterGroup)
+	services.RegisterRoutes(&g.RouterGroup)
 	_ = g.Run()
 }

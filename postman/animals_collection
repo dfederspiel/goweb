@@ -98,7 +98,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"name\": \"Duchess\",\n\t\"age\": 4,\n\t\"legs\": true\n}",
+					"raw": "{\n\t\"name\": \"Fido\",\n\t\"age\": 4,\n\t\"legs\": true\n}",
 					"options": {
 						"raw": {
 							"language": "json"
