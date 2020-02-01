@@ -6,19 +6,14 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 	"log"
 	"net/http"
+	"rsi.com/go-training/data"
+	"rsi.com/go-training/models"
 	"strconv"
 )
 
-type Animal struct {
-	Id   int64  `json:"id"`
-	Name string `json:"name"`
-	Age  int    `json:"age"`
-	Legs bool   `json:"legs"`
-}
+const dbLocation = "./data/goweb.db"
 
-/*StartServer sets up and runs our web server
- */
-func RegisterRoutes(router *gin.RouterGroup) {
+func RegisterAnimalRoutes(router *gin.RouterGroup) {
 
 	router.GET("/animals", GetAnimals())
 	router.GET("/animal/:id", GetAnimal())
@@ -29,19 +24,10 @@ func RegisterRoutes(router *gin.RouterGroup) {
 
 func CreateAnimal() func(c *gin.Context) {
 	return func(c *gin.Context) {
-		var a Animal
+		var a models.Animal
 		_ = c.BindJSON(&a)
 
-		db, err := sql.Open("sqlite3", "./db/goweb.db")
-		if err != nil {
-			log.Fatal(err)
-		}
-		defer db.Close()
-
-		statement, _ := db.Prepare("insert into pets (name, age, legs) values (?,?,?)")
-		defer statement.Close()
-		result, _ := statement.Exec(a.Name, a.Age, a.Legs)
-		a.Id, _ = result.LastInsertId()
+		a = data.CreateAnimal(a)
 
 		c.JSON(http.StatusOK, a)
 	}
@@ -50,69 +36,26 @@ func CreateAnimal() func(c *gin.Context) {
 func GetAnimals() func(c *gin.Context) {
 	return func(c *gin.Context) {
 
-		db, err := sql.Open("sqlite3", "./db/goweb.db")
-		if err != nil {
-			log.Fatal(err)
-		}
-		defer db.Close()
-
-		rows, _ := db.Query("select * from pets")
-		defer rows.Close()
-
-		var pets = make([]Animal, 0)
-		for rows.Next() {
-			var id int64
-			var name string
-			var age int
-			var legs bool
-			err = rows.Scan(&id, &name, &age, &legs)
-			if err != nil {
-				break
-			}
-			pets = append(pets, Animal{
-				Id:   id,
-				Name: name,
-				Age:  age,
-				Legs: legs,
-			})
-		}
-
-		c.JSON(http.StatusOK, pets)
+		animals := data.GetAnimals()
+		c.JSON(http.StatusOK, animals)
 	}
 }
 
 func GetAnimal() func(c *gin.Context) {
 	return func(c *gin.Context) {
-
-		db, err := sql.Open("sqlite3", "./db/goweb.db")
-		if err != nil {
-			log.Fatal(err)
-		}
-		defer db.Close()
-
-		var id int64
-		var name string
-		var age int
-		var legs bool
-		row := db.QueryRow("select * from pets where id = :id", c.Param("id"))
-		row.Scan(&id, &name, &age, &legs)
-
-		c.JSON(http.StatusOK, Animal{
-			Id:   id,
-			Name: name,
-			Age:  age,
-			Legs: legs,
-		})
+		id, _ := strconv.ParseInt(c.Param("id"), 10, 64)
+		animal := data.GetAnimal(id)
+		c.JSON(http.StatusOK, animal)
 	}
 }
 
 func UpdateAnimal() func(c *gin.Context) {
 	return func(c *gin.Context) {
 
-		var a Animal
+		var a models.Animal
 		_ = c.BindJSON(&a)
 
-		db, err := sql.Open("sqlite3", "./db/goweb.db")
+		db, err := sql.Open("sqlite3", dbLocation)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -124,7 +67,7 @@ func UpdateAnimal() func(c *gin.Context) {
 		statement.Exec(a.Name, a.Age, a.Legs, c.Param("id"))
 
 		id, _ := strconv.ParseInt(c.Param("id"), 10, 64)
-		c.JSON(http.StatusOK, Animal{
+		c.JSON(http.StatusOK, models.Animal{
 			Id:   id,
 			Name: a.Name,
 			Age:  a.Age,
@@ -135,7 +78,7 @@ func UpdateAnimal() func(c *gin.Context) {
 
 func DeleteAnimal() func(c *gin.Context) {
 	return func(c *gin.Context) {
-		db, err := sql.Open("sqlite3", "./db/goweb.db")
+		db, err := sql.Open("sqlite3", dbLocation)
 		if err != nil {
 			log.Fatal(err)
 		}
