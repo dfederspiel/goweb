@@ -12,15 +12,16 @@ import (
 )
 
 func main() {
-
-	InitEnvironmentVariables()
+	InitializeEnvironmentVariables()
+	InitializeDB()
 	StartServer()
 }
 
-func StartServer() {
-
+func InitializeDB() {
 	data.InitDB(os.Getenv("DATABASE"))
+}
 
+func StartServer() {
 	g := gin.Default()
 
 	RegisterMiddleware(g)
@@ -43,7 +44,7 @@ func RegisterMiddleware(g *gin.Engine) {
 	})
 }
 
-func InitEnvironmentVariables() {
+func InitializeEnvironmentVariables() {
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Error loading .env file")
