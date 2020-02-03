@@ -1,0 +1,16 @@
+extend ../../lib/pug/__base
+
+block content
+doctype html
+    html(lang="en")
+        head
+            title Rapid Dev 
+            link(href="/css/bundle.min.css",
+                rel="stylesheet")
+            link(rel='stylesheet', href='https://use.fontawesome.com/releases/v5.4.1/css/all.css', integrity='sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz', crossorigin='anonymous')
+            meta(name="viewport" content="width=device-width, initial-scale=1.0")
+        body.standard
+            block main
+                h1 #[+ipsum(20)]
+            script(src='/js/vendor.min.js')
+            script(src='/js/app.min.js')

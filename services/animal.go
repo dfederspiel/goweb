@@ -5,7 +5,7 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 	"net/http"
 	"rsi.com/go-training/data"
-	"rsi.com/go-training/models"
+	"rsi.com/go-training/data/models"
 	"strconv"
 )
 
