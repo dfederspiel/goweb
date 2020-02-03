@@ -38,7 +38,7 @@ func RegisterApi(g *gin.Engine) {
 }
 
 func RegisterMiddleware(g *gin.Engine) {
-	g.Use(static.Serve("/", static.LocalFile("./public", true)))
+	g.Use(static.Serve("/", static.LocalFile("./www/dist", true)))
 	g.Use(func(c *gin.Context) {
 		fmt.Println(c.Request)
 	})
