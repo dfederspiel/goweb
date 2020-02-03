@@ -9,12 +9,6 @@ class AnimalListing extends React.Component {
             animals: []
         };
         Api.fetch("/api/v1/animals").then(r => this.setState({animals: r}));
-
-        fetch("/api/v1/animals").then(r => {
-            console.log(r.json().then(j => {
-                console.log(j)
-            }))
-        })
     }
 
     render() {
@@ -37,4 +31,4 @@ class AnimalListing extends React.Component {
     }
 }
 
-ReactDOM.render(<AnimalListing/>, document.getElementById("react-container"))
+ReactDOM.render(<AnimalListing/>, document.getElementById("react-container"));

@@ -5,7 +5,9 @@ import (
 	"github.com/gin-gonic/contrib/static"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
+	"github.com/semihalev/gin-stats"
 	"log"
+	"net/http"
 	"os"
 	"rsi.com/go-training/data"
 	"rsi.com/go-training/services"
@@ -41,6 +43,11 @@ func RegisterMiddleware(g *gin.Engine) {
 	g.Use(static.Serve("/", static.LocalFile("./www/dist", true)))
 	g.Use(func(c *gin.Context) {
 		fmt.Println(c.Request)
+	})
+	g.Use(stats.RequestStats())
+
+	g.GET("/stats", func(c *gin.Context) {
+		c.JSON(http.StatusOK, stats.Report())
 	})
 }
 
