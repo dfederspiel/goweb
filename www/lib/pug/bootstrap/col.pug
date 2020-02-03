@@ -1,8 +1,0 @@
-mixin col(size)
-    - var className = size == undefined ? 'col' : 'col-' + size;
-    div(class= className)
-        if block
-            block
-        else
-            p.
-                This col has no content

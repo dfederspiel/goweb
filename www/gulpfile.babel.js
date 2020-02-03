@@ -1,5 +1,4 @@
 const gulp = require('gulp'),
-    pug = require('gulp-pug'), //https://www.npmjs.com/package/gulp-pug
     sourcemaps = require('gulp-sourcemaps'),
     concat = require('gulp-concat'),
     sass = require('gulp-sass'),
@@ -82,28 +81,16 @@ const json = (callback) => {
 };
 
 const html = (callback) => {
-    console.log(colors.cyan('[HTML] Transpiling PUG'));
-    return gulp.src(['./src/markup/**/*.pug'])
-        .pipe(
-            pug({
-                pretty: true,
-                debug: false,
-                compileDebug: false,
-                data: jsonData()
-            }).on('error', function (err) {
-                console.log('[HTML] ' + colors.bgWhite.red(err.toString()));
-                console.log('[HTML] ' + colors.red(err.message));
-                callback();
-            })
-                .on('end', function () {
-                    console.log(colors.green('[HTML] Transpilation complete'));
-                    callback();
-                })
-        )
+    console.log('[HTML] ' + colors.cyan('Copying HTML'));
+    return gulp.src('./src/markup/**/*.*')
         .pipe(multiDest(config.distribution.html))
-        .pipe(bs.stream({
-            once: true
-        }));
+        .on('error', (err) => {
+            console.log('[HTML] ' + colors.bgWhite.red(err.toString()));
+            callback();
+        })
+        .on('end', () => {
+            callback();
+        })
 };
 
 const img = (callback) => {
@@ -134,7 +121,7 @@ const jsbundle = (input, output, destinations, callback) => {
         });
 
     return bundleJS(b, output, destinations, callback);
-}
+};
 
 const bundleJS = (browserify, output, destinations, callback) => {
     return browserify
@@ -159,7 +146,7 @@ const bundleJS = (browserify, output, destinations, callback) => {
         }))
         .pipe(sourcemaps.write('./'))
         .pipe(multiDest(destinations));
-}
+};
 
 const components = (callback) => {
     console.log(colors.cyan('[JS] Bundling and Babeling JS'));
@@ -234,7 +221,7 @@ const serve = (callback) => {
             },
             app
         ]
-    }, function (err, bs) {
+    }, function () {
         console.log(colors.cyan('[SERVE] Says: hello'));
         callback();
     });
@@ -261,10 +248,10 @@ const watch = (done) => {
 
     console.log(colors.cyan('[WATCH] Watching...'));
 
-    gulp.watch(['./src/markup/**/*.pug'])
-        .on('all', function (event, path, stats) {
+    gulp.watch(['./src/markup/**/*.html'])
+        .on('all', function () {
             queue.queue({
-                name: 'Pug'
+                name: 'HTML'
             }, (task, cb) => {
                 bs.notify("Transpiling" + task.name, 1000);
                 html(() => {
@@ -275,7 +262,7 @@ const watch = (done) => {
         });
 
     gulp.watch(['./src/**/*.scss'])
-        .on('all', function (event, path, stats) {
+        .on('all', function () {
             queue.queue({
                 name: 'Scss'
             }, (task) => {
@@ -287,7 +274,7 @@ const watch = (done) => {
         });
 
     gulp.watch(['./src/*.js', './src/js/**/*.js', './src/components/**/*.js', './src/pages/**/*.js'])
-        .on('all', function (event, path, stats) {
+        .on('all', function () {
             queue.queue({
                 name: 'Js'
             }, (task) => {
@@ -300,10 +287,10 @@ const watch = (done) => {
         });
 
     gulp.watch(['./src/data/generate.js'])
-        .on('all', function (event, path, stats) {
+        .on('all', function () {
             queue.queue({
                 name: 'Generate'
-            }, (task) => {
+            }, () => {
                 bs.notify("Regenerating Data", 1000);
                 json(() => {
                     build_routes(() => {
@@ -315,10 +302,10 @@ const watch = (done) => {
         });
 
     gulp.watch(['./src/img/**/*'])
-        .on('all', function (event, path, stats) {
+        .on('all', function () {
             queue.queue({
                 name: 'Generate'
-            }, (task) => {
+            }, () => {
                 bs.notify("Transferring Images", 1000);
                 img(() => {
                     reload();
@@ -328,7 +315,7 @@ const watch = (done) => {
         });
 
     gulp.watch('./src/**/*')
-        .on('all', function (event, path, stats) {
+        .on('all', function (event, path) {
             console.log(colors.yellow('File ' + path + ' ' + event));
         });
 
