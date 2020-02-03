@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "986263ed-dd0a-4479-a972-24e509612f9c",
+		"_postman_id": "10c5e3c3-5a36-4715-9364-f429248d4b15",
 		"name": "Golang Training",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -11,14 +11,11 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/api/animals",
-					"protocol": "http",
+					"raw": "{{api}}/animals",
 					"host": [
-						"localhost"
+						"{{api}}"
 					],
-					"port": "8080",
 					"path": [
-						"api",
 						"animals"
 					]
 				}
@@ -109,7 +106,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"name\": \"Rick\",\n\t\"age\": 62,\n\t\"legs\": true\n}",
+					"raw": "{\n\t\"name\": \"Punky\",\n\t\"age\": 42,\n\t\"legs\": true\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -153,7 +150,7 @@
 	],
 	"variable": [
 		{
-			"id": "732fd78c-e6ae-48b7-a949-552832216517",
+			"id": "ff43a15a-5b38-4655-a093-0c74c7d67e2d",
 			"key": "api",
 			"value": "http://localhost:8080/api/v1",
 			"type": "string"
