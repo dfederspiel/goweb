@@ -41,11 +41,10 @@ let server = null;
 
 const config = {
     distribution: {
-        js: ["./dist/js"],
-        html: ["./dist"],
-        css: ["./dist/css"],
-        images: ["./dist/img"],
-        fonts: ["./dist/fonts"]
+        js: ["../www/js"],
+        html: ["../www"],
+        css: ["../www/css"],
+        images: ["../www/img"],
     }
 };
 
@@ -103,12 +102,6 @@ const img = (callback) => {
         }).on('end', function () {
             callback();
         });
-};
-
-const font = () => {
-    console.log('[FONT] ' + colors.cyan('Copying Fonts'));
-    return gulp.src('./src/fonts/**/*.*')
-        .pipe(multiDest(config.distribution.fonts));
 };
 
 const jsbundle = (input, output, destinations, callback) => {
@@ -318,10 +311,6 @@ const watch = (done) => {
 };
 
 gulp.task('watch', watch);
-gulp.task('build', gulp.series(gulp.parallel(html, scss, js, jsv, img, font)));
-gulp.task('default', gulp.series(json, gulp.parallel(html, scss, js, jsv, img, font), gulp.parallel(serve, watch)));
+gulp.task('build', gulp.series(gulp.parallel(html, scss, js, jsv, img)));
+gulp.task('default', gulp.series(json, gulp.parallel(html, scss, js, jsv, img), gulp.parallel(serve, watch)));
 gulp.task('serve', serve);
-gulp.task('js-test', shell.task(['npm run unit']));
-gulp.task('react-test', shell.task(['npm run test']));
-gulp.task('js-coverage', shell.task(['start "" "test\\coverage\\index.html"']));
-gulp.task('react-coverage', shell.task(['start "" "test\\react\\index.html"']));
