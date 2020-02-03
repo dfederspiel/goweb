@@ -13,11 +13,11 @@ class AnimalListing extends React.Component {
 
     render() {
         return (
-            <div>
+            <div className="row">
                 {
                     this.state.animals.map(i => {
                         return (
-                            <article key={i.id}>
+                            <article className="col-md-4" key={i.id}>
                                 <b>{i.name} (id: {i.id})</b>
                                 <p>
                                     {i.age} years old {i.legs ? 'with' : 'without'} legs
