@@ -1,6 +1,6 @@
 ﻿import React from 'react';
 import ReactDOM from 'react-dom';
-import Api from "../services/Api";
+import Api from "./src/services/Api";
 
 class AnimalListing extends React.Component {
     constructor(props) {

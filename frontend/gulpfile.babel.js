@@ -41,10 +41,10 @@ let server = null;
 
 const config = {
     distribution: {
-        js: ["../www/js"],
-        html: ["../www"],
-        css: ["../www/css"],
-        images: ["../www/img"],
+        js: ["../www/js","./dist/js"],
+        html: ["../www","./dist"],
+        css: ["../www/css","./dist/css"],
+        images: ["../www/img","./dist/img"],
     }
 };
 
@@ -143,7 +143,7 @@ const bundleJS = (browserify, output, destinations, callback) => {
 
 const js = (callback) => {
     console.log(colors.cyan('[JS] Bundling and Babeling JS'));
-    jsbundle('./src/js/app.js', 'app.min.js', config.distribution.js, callback);
+    jsbundle('./app.js', 'app.min.js', config.distribution.js, callback);
 };
 
 const jsv = (callback) => {
@@ -193,7 +193,7 @@ const serve = (callback) => {
     inject_middleware();
     var app = express();
     app.use(['/discover*'], function (req, res) {
-        res.sendFile(appRoot + '/dist/index.html');
+        res.sendFile(appRoot + './dist/index.html');
     });
     bs.init({
         open: false,
@@ -226,7 +226,7 @@ const inject_middleware = (cb) => {
     });
     server.use(jsonServer.defaults());
     server.use(jsonServer.router(jsonData()));
-    router.use('/api', server);
+    router.use('/api/v1', server);
     if (cb) cb();
 };
 
@@ -281,7 +281,7 @@ const watch = (done) => {
             }, () => {
                 bs.notify("Regenerating Data", 1000);
                 json(() => {
-                    build_routes(() => {
+                    inject_middleware(() => {
                         reload();
                         done();
                     });
