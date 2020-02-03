@@ -6,6 +6,6 @@ import (
 
 var db *sql.DB
 
-func InitDB(database *sql.DB) {
+func ConfigureDB(database *sql.DB) {
 	db = database
 }

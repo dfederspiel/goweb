@@ -6,14 +6,14 @@ import (
 	"rsi.com/go-training/data/models"
 )
 
-func GetAnimals() ([]models.Animal, error) {
+func GetAnimals() (pets []models.Animal, err error) {
 	rows, err := db.Query("select id, name, age, legs from pets")
 	if err != nil {
 		return []models.Animal{}, err
 	}
 	defer rows.Close()
 
-	var pets = make([]models.Animal, 0)
+	pets = make([]models.Animal, 0)
 	for rows.Next() {
 		var a models.Animal
 		err = rows.Scan(&a.Id, &a.Name, &a.Age, &a.Legs)
@@ -22,18 +22,17 @@ func GetAnimals() ([]models.Animal, error) {
 		}
 		pets = append(pets, a)
 	}
-	return pets, nil
+	return
 }
 
-func GetAnimal(id int64) (models.Animal, error) {
-	var a models.Animal
+func GetAnimal(id int64) (a models.Animal, err error) {
+	a = models.Animal{}
 	row := db.QueryRow("select id, name, age, legs from pets where id = ?", id)
-	err := row.Scan(&a.Id, &a.Name, &a.Age, &a.Legs)
+	err = row.Scan(&a.Id, &a.Name, &a.Age, &a.Legs)
 	if err != nil {
 		log.Println(err)
-		return models.Animal{}, err
 	}
-	return a, nil
+	return
 }
 
 func CreateAnimal(a models.Animal) (models.Animal, error) {
@@ -48,26 +47,26 @@ func CreateAnimal(a models.Animal) (models.Animal, error) {
 	return a, nil
 }
 
-func UpdateAnimal(a models.Animal) error {
+func UpdateAnimal(a models.Animal) (err error) {
 	statement, _ := db.Prepare("update pets set name=?, age=?, legs=? where id=?")
 	defer statement.Close()
 	result, err := statement.Exec(a.Name, a.Age, a.Legs, a.Id)
 	if err != nil {
-		return err
+		return
 	}
 	i, _ := result.RowsAffected()
 	fmt.Println(i)
-	return nil
+	return
 }
 
-func DeleteAnimal(id int64) error {
+func DeleteAnimal(id int64) (err error) {
 	statement, _ := db.Prepare("delete from pets where id=?")
 	defer statement.Close()
 	result, err := statement.Exec(id)
 	if err != nil {
-		return err
+		return
 	}
 	i, _ := result.RowsAffected()
 	fmt.Println(i)
-	return nil
+	return
 }
