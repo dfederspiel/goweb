@@ -1,32 +1,32 @@
-package data
+package v2
 
 import (
 	"fmt"
 	"log"
-	"rsi.com/go-training/data/models"
 )
 
-func GetAnimals() (pets []models.Animal, err error) {
+func GetPets() (pets []Pet, err error) {
+
 	rows, err := db.Query("select id, name, age, legs from pets")
 	if err != nil {
-		return []models.Animal{}, err
+		return []Pet{}, err
 	}
 	defer rows.Close()
 
-	pets = make([]models.Animal, 0)
+	pets = make([]Pet, 0)
 	for rows.Next() {
-		var a models.Animal
+		var a Pet
 		err = rows.Scan(&a.Id, &a.Name, &a.Age, &a.Legs)
 		if err != nil {
-			return []models.Animal{}, err
+			return []Pet{}, err
 		}
 		pets = append(pets, a)
 	}
 	return
 }
 
-func GetAnimal(id int64) (a models.Animal, err error) {
-	a = models.Animal{}
+func GetPet(id int64) (a Pet, err error) {
+	a = Pet{}
 	row := db.QueryRow("select id, name, age, legs from pets where id = ?", id)
 	err = row.Scan(&a.Id, &a.Name, &a.Age, &a.Legs)
 	if err != nil {
@@ -35,7 +35,7 @@ func GetAnimal(id int64) (a models.Animal, err error) {
 	return
 }
 
-func CreateAnimal(a models.Animal) (models.Animal, error) {
+func CreatePet(a Pet) (Pet, error) {
 	statement, _ := db.Prepare("insert into pets (name, age, legs) values (?,?,?)")
 	defer statement.Close()
 	result, err := statement.Exec(a.Name, a.Age, a.Legs)
@@ -47,7 +47,7 @@ func CreateAnimal(a models.Animal) (models.Animal, error) {
 	return a, nil
 }
 
-func UpdateAnimal(a models.Animal) (err error) {
+func UpdatePet(a Pet) (err error) {
 	statement, _ := db.Prepare("update pets set name=?, age=?, legs=? where id=?")
 	defer statement.Close()
 	result, err := statement.Exec(a.Name, a.Age, a.Legs, a.Id)
@@ -59,7 +59,7 @@ func UpdateAnimal(a models.Animal) (err error) {
 	return
 }
 
-func DeleteAnimal(id int64) (err error) {
+func DeletePet(id int64) (err error) {
 	statement, _ := db.Prepare("delete from pets where id=?")
 	defer statement.Close()
 	result, err := statement.Exec(id)

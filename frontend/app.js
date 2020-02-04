@@ -11,6 +11,7 @@ class AnimalListing extends React.Component {
         Api.fetch("/api/v1/animals").then(r => this.setState({animals: r}));
     }
 
+
     render() {
         return (
             <div className="row">
