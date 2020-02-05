@@ -12,11 +12,12 @@ import (
 	"net/http"
 	"os"
 	"rsi.com/go-training/api/v1"
-	"rsi.com/go-training/api/v2"
+	"rsi.com/go-training/api/v2/pet"
 	"time"
 )
 
 var engine *gin.Engine
+var db *sql.DB
 
 func main() {
 	initializeEnvironmentVariables()
@@ -32,7 +33,8 @@ func initializeEnvironmentVariables() {
 }
 
 func initializeDB(dataSource string) {
-	db, err := sql.Open("sqlite3", dataSource)
+	d, err := sql.Open("sqlite3", dataSource)
+	db = d
 	if err != nil {
 		log.Panic(err)
 	}
@@ -44,7 +46,6 @@ func initializeDB(dataSource string) {
 
 func setAPIDataContext(db *sql.DB) {
 	v1.ConfigureDB(db)
-	v2.ConfigureDB(db)
 }
 
 func startServer() {
@@ -63,8 +64,14 @@ func registerApi(g *gin.Engine) {
 	api := g.Group(os.Getenv("API"))
 	{
 		v1.Register(api)
-		v2.Register(api)
 	}
+
+	petRepo := pet.NewRepository(db)
+	petService := pet.NewService(petRepo)
+	petHandler := pet.NewHandler(petService)
+
+	h := gin.WrapF(petHandler.Get)
+	engine.Handle("GET", "/api/v2/pets", h)
 }
 
 func registerMiddleware(g *gin.Engine) {
