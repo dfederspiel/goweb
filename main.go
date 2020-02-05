@@ -2,70 +2,86 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
 	"github.com/gin-gonic/contrib/static"
 	"github.com/gin-gonic/gin"
-	cors "github.com/itsjamie/gin-cors"
+	"github.com/itsjamie/gin-cors"
 	"github.com/joho/godotenv"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/semihalev/gin-stats"
 	"log"
 	"net/http"
 	"os"
-	"rsi.com/go-training/data"
-	"rsi.com/go-training/services"
+	"rsi.com/go-training/api/v1"
+	"rsi.com/go-training/api/v2/pet"
 	"time"
 )
 
+var engine *gin.Engine
+var db *sql.DB
+
 func main() {
 	initializeEnvironmentVariables()
-	initializeDB()
+	initializeDB(os.Getenv("DATABASE"))
 	startServer()
 }
 
-func initializeDB() {
-	db := initDB(os.Getenv("DATABASE"))
-	data.ConfigureDB(db)
+func initializeEnvironmentVariables() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
 }
 
-func initDB(dataSourceName string) *sql.DB {
-	db, err := sql.Open("sqlite3", dataSourceName)
+func initializeDB(dataSource string) {
+	d, err := sql.Open("sqlite3", dataSource)
+	db = d
 	if err != nil {
 		log.Panic(err)
 	}
 	if err = db.Ping(); err != nil {
 		log.Panic(err)
 	}
-	return db
+	setAPIDataContext(db)
+}
+
+func setAPIDataContext(db *sql.DB) {
+	v1.ConfigureDB(db)
 }
 
 func startServer() {
-	g := gin.Default()
+	engine = gin.Default()
 
-	registerMiddleware(g)
-	registerApi(g)
+	registerMiddleware(engine)
+	registerApi(engine)
 
-	g.GET("/stats", func(c *gin.Context) {
-		c.JSON(http.StatusOK, stats.Report())
-	})
-
-	_ = g.Run()
+	err := engine.Run()
+	if err != nil {
+		panic(err)
+	}
 }
 
 func registerApi(g *gin.Engine) {
 	api := g.Group(os.Getenv("API"))
 	{
-		services.RegisterRoutes(api)
+		v1.Register(api)
 	}
+
+	petRepo := pet.NewRepository(db)
+	petService := pet.NewService(petRepo)
+	petHandler := pet.NewHandler(petService)
+
+	h := gin.WrapF(petHandler.Get)
+	engine.Handle("GET", "/api/v2/pets", h)
 }
 
 func registerMiddleware(g *gin.Engine) {
-	g.Use(static.Serve("/", static.LocalFile("./www", true)))
-	g.Use(func(c *gin.Context) {
-		fmt.Println(c.Request)
-	})
-	g.Use(stats.RequestStats())
-	g.Use(cors.Middleware(cors.Config{
+	configureStaticDirectoryMiddleware(g)
+	configureStatsMiddleware(g)
+	configureCORSMiddleware(g)
+}
+
+func configureCORSMiddleware(g *gin.Engine) gin.IRoutes {
+	return g.Use(cors.Middleware(cors.Config{
 		Origins:         "*",
 		Methods:         "GET, PUT, POST, DELETE",
 		RequestHeaders:  "Origin, Authorization, Content-Type",
@@ -76,9 +92,13 @@ func registerMiddleware(g *gin.Engine) {
 	}))
 }
 
-func initializeEnvironmentVariables() {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
+func configureStaticDirectoryMiddleware(g *gin.Engine) gin.IRoutes {
+	return g.Use(static.Serve("/", static.LocalFile("./www", true)))
+}
+
+func configureStatsMiddleware(g *gin.Engine) {
+	g.Use(stats.RequestStats())
+	g.GET("/stats", func(c *gin.Context) {
+		c.JSON(http.StatusOK, stats.Report())
+	})
 }

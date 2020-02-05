@@ -1,29 +1,16 @@
-package services
+package pet
 
 import (
 	"github.com/gin-gonic/gin"
-	_ "github.com/mattn/go-sqlite3"
 	"net/http"
-	"rsi.com/go-training/data"
-	"rsi.com/go-training/data/models"
 	"strconv"
 )
 
-func RegisterAnimalRoutes(router *gin.RouterGroup) {
-
-	router.GET("/animals", GetAnimals())
-	router.GET("/animal/:id", GetAnimal())
-	router.POST("/animal", CreateAnimal())
-	router.PUT("/animal/:id", UpdateAnimal())
-	router.DELETE("/animal/:id", DeleteAnimal())
-}
-
-func CreateAnimal() func(c *gin.Context) {
+func HandleCreatePet() func(c *gin.Context) {
 	return func(c *gin.Context) {
-		var a models.Animal
+		var a Pet
 		_ = c.BindJSON(&a)
-
-		a, err := data.CreateAnimal(a)
+		a, err := CreatePet(a)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, err)
 		} else {
@@ -32,39 +19,39 @@ func CreateAnimal() func(c *gin.Context) {
 	}
 }
 
-func GetAnimals() func(c *gin.Context) {
+func HandleGetPets() func(c *gin.Context) {
 	return func(c *gin.Context) {
 
-		animals, err := data.GetAnimals()
+		Pets, err := GetPets()
 		if err != nil {
 			c.JSON(http.StatusBadRequest, err)
 		}
-		c.JSON(http.StatusOK, animals)
+		c.JSON(http.StatusOK, Pets)
 	}
 }
 
-func GetAnimal() func(c *gin.Context) {
+func HandleGetPet() func(c *gin.Context) {
 	return func(c *gin.Context) {
 		id, _ := strconv.ParseInt(c.Param("id"), 10, 64)
-		animal, err := data.GetAnimal(id)
+		Pet, err := GetPet(id)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, err)
 		} else {
-			c.JSON(http.StatusOK, animal)
+			c.JSON(http.StatusOK, Pet)
 		}
 	}
 }
 
-func UpdateAnimal() func(c *gin.Context) {
+func HandleUpdatePet() func(c *gin.Context) {
 	return func(c *gin.Context) {
 
-		var a models.Animal
+		var a Pet
 		_ = c.BindJSON(&a)
 
 		id, _ := strconv.ParseInt(c.Param("id"), 10, 64)
 		a.Id = id
 
-		err := data.UpdateAnimal(a)
+		err := UpdatePet(a)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, err)
 		} else {
@@ -73,10 +60,10 @@ func UpdateAnimal() func(c *gin.Context) {
 	}
 }
 
-func DeleteAnimal() func(c *gin.Context) {
+func HandleDeletePet() func(c *gin.Context) {
 	return func(c *gin.Context) {
 		id, _ := strconv.ParseInt(c.Param("id"), 10, 64)
-		err := data.DeleteAnimal(id)
+		err := DeletePet(id)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, err)
 		}
