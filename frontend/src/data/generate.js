@@ -12,14 +12,13 @@ module.exports = function () {
     const faker = require('faker');
     const _ = require('lodash');
     return {
-        animals: _.times(20, function (n) {
-            const article = {
+        pets: _.times(20, function (n) {
+            const pet = {
                 id: n,
                 name: faker.name.firstName(),
-                age: faker.random.number({ min: 2, max: 18}),
-                legs: faker.random.boolean()
+                age: faker.random.number({min: 2, max: 18})
             };
-            return article;
+            return pet;
         })
     };
 };

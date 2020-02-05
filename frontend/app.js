@@ -8,7 +8,7 @@ class AnimalListing extends React.Component {
         this.state = {
             animals: []
         };
-        Api.fetch("/api/v1/animals").then(r => this.setState({animals: r}));
+        Api.fetch("/api/v1/pets").then(r => this.setState({animals: r}));
     }
 
 
@@ -21,7 +21,7 @@ class AnimalListing extends React.Component {
                             <article className="col-md-4" key={i.id}>
                                 <b>{i.name} (id: {i.id})</b>
                                 <p>
-                                    {i.age} years old {i.legs ? 'with' : 'without'} legs
+                                    {i.age} years old
                                 </p>
                             </article>
                         )
@@ -31,5 +31,6 @@ class AnimalListing extends React.Component {
         )
     }
 }
+
 
 ReactDOM.render(<AnimalListing/>, document.getElementById("react-container"));
