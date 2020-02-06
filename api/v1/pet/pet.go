@@ -3,10 +3,11 @@ package pet
 import "database/sql"
 
 type Pet struct {
-	Id   int64  `json:"id"`
-	Name string `json:"name"`
-	Age  int    `json:"age"`
-	Legs bool   `json:"legs"`
+	Id    int64  `json:"id"`
+	Name  string `json:"name"`
+	Age   int    `json:"age"`
+	Legs  bool   `json:"legs"`
+	Color string `json:"color"`
 }
 
 var db *sql.DB

@@ -3,6 +3,7 @@ package v1
 import (
 	"database/sql"
 	"github.com/gin-gonic/gin"
+	"os"
 	"rsi.com/go-training/api/v1/pet"
 )
 
@@ -13,9 +14,12 @@ func ConfigureDB(database *sql.DB) {
 	pet.ConfigureDB(db)
 }
 
-func Register(router *gin.RouterGroup) {
-	group := router.Group("/v1")
+func Register(g *gin.Engine) {
+	api := g.Group(os.Getenv("API"))
 	{
-		pet.Routes(group)
+		group := api.Group("/v1")
+		{
+			pet.Routes(group)
+		}
 	}
 }

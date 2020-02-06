@@ -1,36 +1,36 @@
 package pet
 
 type Service interface {
-	GetAllPets() ([]*Pet, error)
-	GetPetById(id string) (*Pet, error)
-	CreatePet(pet *Pet) (err error)
-	UpdatePet(pet *Pet) (err error)
-	DeletePetById(id string) (err error)
+	GetAll() ([]*Pet, error)
+	GetById(id string) (*Pet, error)
+	Create(pet *Pet) (err error)
+	Update(pet *Pet) (err error)
+	DeleteById(id string) (err error)
 }
 
 type service struct {
 	repo Repository
 }
 
-func (s service) GetAllPets() ([]*Pet, error) {
+func (s service) GetAll() ([]*Pet, error) {
 	return s.repo.GetAll()
 }
 
-func (s service) GetPetById(id string) (*Pet, error) {
+func (s service) GetById(id string) (*Pet, error) {
 	return s.repo.GetById(id)
 }
 
-func (s service) CreatePet(pet *Pet) (err error) {
+func (s service) Create(pet *Pet) (err error) {
 	s.repo.Create(pet)
 	return
 }
 
-func (s service) UpdatePet(pet *Pet) (err error) {
+func (s service) Update(pet *Pet) (err error) {
 	s.repo.Update(pet)
 	return
 }
 
-func (s service) DeletePetById(id string) (err error) {
+func (s service) DeleteById(id string) (err error) {
 	s.repo.DeleteById(id)
 	return
 }

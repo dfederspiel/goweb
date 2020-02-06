@@ -7,7 +7,7 @@ import (
 
 func GetPets() (pets []Pet, err error) {
 
-	rows, err := db.Query("select id, name, age, legs from pets")
+	rows, err := db.Query("select id, name, age, legs, color from pets")
 	if err != nil {
 		return []Pet{}, err
 	}
@@ -16,7 +16,7 @@ func GetPets() (pets []Pet, err error) {
 	pets = make([]Pet, 0)
 	for rows.Next() {
 		var a Pet
-		err = rows.Scan(&a.Id, &a.Name, &a.Age, &a.Legs)
+		err = rows.Scan(&a.Id, &a.Name, &a.Age, &a.Legs, &a.Color)
 		if err != nil {
 			return []Pet{}, err
 		}
@@ -27,8 +27,8 @@ func GetPets() (pets []Pet, err error) {
 
 func GetPet(id int64) (a Pet, err error) {
 	a = Pet{}
-	row := db.QueryRow("select id, name, age, legs from pets where id = ?", id)
-	err = row.Scan(&a.Id, &a.Name, &a.Age, &a.Legs)
+	row := db.QueryRow("select id, name, age, legs, color from pets where id = ?", id)
+	err = row.Scan(&a.Id, &a.Name, &a.Age, &a.Legs, &a.Color)
 	if err != nil {
 		log.Println(err)
 	}
@@ -36,9 +36,9 @@ func GetPet(id int64) (a Pet, err error) {
 }
 
 func CreatePet(a Pet) (Pet, error) {
-	statement, _ := db.Prepare("insert into pets (name, age, legs) values (?,?,?)")
+	statement, _ := db.Prepare("insert into pets (name, age, legs, color) values (?,?,?,?)")
 	defer statement.Close()
-	result, err := statement.Exec(a.Name, a.Age, a.Legs)
+	result, err := statement.Exec(a.Name, a.Age, a.Legs, a.Color)
 	if err != nil {
 		return a, err
 	}
@@ -48,9 +48,9 @@ func CreatePet(a Pet) (Pet, error) {
 }
 
 func UpdatePet(a Pet) (err error) {
-	statement, _ := db.Prepare("update pets set name=?, age=?, legs=? where id=?")
+	statement, _ := db.Prepare("update pets set name=?, age=?, legs=?, color=? where id=?")
 	defer statement.Close()
-	result, err := statement.Exec(a.Name, a.Age, a.Legs, a.Id)
+	result, err := statement.Exec(a.Name, a.Age, a.Legs, a.Color, a.Id)
 	if err != nil {
 		return
 	}
