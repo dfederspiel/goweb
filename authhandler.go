@@ -14,12 +14,6 @@ var users = map[string]string{
 	"user2": "password2",
 }
 
-// Create a struct that models the structure of a user, both in the request body, and in the DB
-type Credentials struct {
-	Password string `json:"password"`
-	Username string `json:"username"`
-}
-
 //
 type Claims struct {
 	Email   string `json:"email"`

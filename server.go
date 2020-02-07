@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	jwt "github.com/appleboy/gin-jwt/v2"
 	"github.com/gin-gonic/contrib/static"
 	"github.com/gin-gonic/gin"
 	"github.com/itsjamie/gin-cors"
@@ -38,7 +37,7 @@ func startServer() {
 	RegisterMiddleware(engine)
 
 	v1.Register(engine)
-	v2.Register(db, engine, token)
+	v2.Register(db, engine)
 
 	engine.GET("/callback", func(context *gin.Context) {
 		fmt.Println(context.Query("code"))
@@ -94,20 +93,6 @@ func RegisterMiddleware(g *gin.Engine) {
 	configureStaticDirectoryMiddleware(g)
 	configureStatsMiddleware(g)
 	configureCORSMiddleware(g)
-}
-
-var token *jwt.GinJWTMiddleware
-var identityKey = "id"
-
-type User struct {
-	UserName  string
-	FirstName string
-	LastName  string
-}
-
-type login struct {
-	Username string `form:"username" json:"username" binding:"required"`
-	Password string `form:"password" json:"password" binding:"required"`
 }
 
 func configureCORSMiddleware(g *gin.Engine) gin.IRoutes {
