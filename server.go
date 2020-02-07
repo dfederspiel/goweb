@@ -2,12 +2,16 @@ package main
 
 import (
 	"database/sql"
+	"encoding/json"
+	"fmt"
+	jwt "github.com/appleboy/gin-jwt/v2"
 	"github.com/gin-gonic/contrib/static"
 	"github.com/gin-gonic/gin"
 	"github.com/itsjamie/gin-cors"
 	"github.com/semihalev/gin-stats"
 	"log"
 	"net/http"
+	"net/url"
 	"rsi.com/go-training/api/v1"
 	"rsi.com/go-training/api/v2"
 	"time"
@@ -34,7 +38,34 @@ func startServer() {
 	RegisterMiddleware(engine)
 
 	v1.Register(engine)
-	v2.Register(db, engine)
+	v2.Register(db, engine, token)
+
+	engine.GET("/callback", func(context *gin.Context) {
+		fmt.Println(context.Query("code"))
+
+		formData := url.Values{
+			"code":          {context.Query("code")},
+			"client_id":     {"90445840135-99mhv65o8m5kt3n6v46h6k1c2ie0eum1.apps.googleusercontent.com"},
+			"client_secret": {"DrCd3z9oJdemHscZdstuCblb"},
+			"redirect_uri":  {"http://localhost:8080/callback"},
+			"grant_type":    {"authorization_code"},
+		}
+
+		var authResponse AuthResponse
+		response, _ := http.PostForm("https://oauth2.googleapis.com/token", formData)
+		getJson(response, &authResponse)
+		fmt.Println(authResponse)
+		http.SetCookie(context.Writer, &http.Cookie{
+			Name:     "token",
+			Value:    authResponse.IdToken,
+			Expires:  time.Now().Add(120 * time.Minute),
+			HttpOnly: true,
+		})
+
+	})
+
+	engine.GET("/welcome", gin.WrapF(Welcome))
+	engine.GET("/refresh", gin.WrapF(Refresh))
 
 	err := engine.Run()
 	if err != nil {
@@ -42,10 +73,41 @@ func startServer() {
 	}
 }
 
+type AuthResponse struct {
+	AccessToken string `json:"access_token"`
+	ExpiresIn   int    `json:"expires_in"`
+	Scope       string `json:"scope"`
+	TokenType   string `json:"token_type"`
+	IdToken     string `json:"id_token"`
+	State       string `json:"session_state"`
+}
+
+func getJson(r *http.Response, target interface{}) error {
+	defer r.Body.Close()
+	//responseData, _ := ioutil.ReadAll(r.Body)
+	//responseString := string(responseData)
+	//fmt.Println(responseString)
+	return json.NewDecoder(r.Body).Decode(target)
+}
+
 func RegisterMiddleware(g *gin.Engine) {
 	configureStaticDirectoryMiddleware(g)
 	configureStatsMiddleware(g)
 	configureCORSMiddleware(g)
+}
+
+var token *jwt.GinJWTMiddleware
+var identityKey = "id"
+
+type User struct {
+	UserName  string
+	FirstName string
+	LastName  string
+}
+
+type login struct {
+	Username string `form:"username" json:"username" binding:"required"`
+	Password string `form:"password" json:"password" binding:"required"`
 }
 
 func configureCORSMiddleware(g *gin.Engine) gin.IRoutes {
