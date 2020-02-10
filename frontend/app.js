@@ -10,7 +10,7 @@ function Home() {
     getActiveUser(setUser)
 
     if(user == "")
-        return <div>Welcome! Please <a id="user-login" onClick={oauthSignIn}>log in</a> to continue </div>
+        return <div>Welcome! Please&nbsp;<a id="user-login" onClick={oauthSignIn}>log in</a>&nbsp;to continue </div>
     else 
         return <div>Hello, {user}</div>
 }
@@ -19,7 +19,6 @@ function App() {
     return (
         <Router>
             <div>
-
                 <Route path="/">
                     <Home/>
                 </Route>

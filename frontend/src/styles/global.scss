@@ -5,13 +5,25 @@
 
 body {
     font-family: 'Roboto', 'sans-serif';
-    margin: 20rem auto;
+    background-color: #369;
+    color: white;
+    font-size: 1.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+
+    div {
+        display: flex;
+        justify-content: center;
+    }
 }
 
 a:not([href]):not([tabindex]) {
     text-decoration: underline;
-    color: #369;
+    color: lighten(#369, 50%);
     cursor: pointer;
+    transition: all .25s;
 
     &:hover {
         text-decoration: underline;
