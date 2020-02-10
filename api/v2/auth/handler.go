@@ -13,10 +13,16 @@ import (
 type Handler interface {
 	CurrentUser(c *gin.Context)
 	Callback(c *gin.Context)
+	Logout(c *gin.Context)
 }
 
 type handler struct {
 	service Service
+}
+
+func (h handler) CurrentUser(c *gin.Context) {
+	user, _ := h.service.CurrentUser(c)
+	c.JSON(http.StatusOK, user)
 }
 
 func (h handler) Callback(c *gin.Context) {
@@ -52,9 +58,14 @@ func (h handler) Callback(c *gin.Context) {
 	c.Redirect(http.StatusMovedPermanently, "/")
 }
 
-func (h handler) CurrentUser(c *gin.Context) {
-	user, _ := h.service.CurrentUser(c)
-	c.JSON(http.StatusOK, user)
+func (h handler) Logout(c *gin.Context) {
+	http.SetCookie(c.Writer, &http.Cookie{
+		Name:     "token",
+		Value:    "",
+		MaxAge:   -1,
+		HttpOnly: true,
+	})
+	c.Redirect(http.StatusMovedPermanently, "/")
 }
 
 func NewHandler(service Service) Handler {

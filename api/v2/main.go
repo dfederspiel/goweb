@@ -16,6 +16,7 @@ func Register(db *sql.DB, engine *gin.Engine) {
 	authHandler := auth.NewHandler(authService)
 
 	engine.GET("/callback", authHandler.Callback)
+	engine.POST("/logout", authHandler.Logout)
 
 	api := engine.Group(os.Getenv("API"))
 	{

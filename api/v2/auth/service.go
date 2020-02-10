@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
-	"github.com/gorilla/sessions"
 	"github.com/lestrrat/go-jwx/jwk"
 	"github.com/pkg/errors"
 	"net/http"
@@ -12,7 +11,6 @@ import (
 )
 
 var keySet *jwk.Set
-var store = sessions.NewCookieStore([]byte{97, 17, 116, 200, 253, 170, 104, 186, 89, 180, 92, 37, 4, 157, 157, 90, 18, 73, 219, 37, 49, 127, 85, 179, 67, 65, 72, 254, 101, 126, 218, 58})
 
 type Service interface {
 	RequiresAuth(profile AuthProfile) gin.HandlerFunc
@@ -48,24 +46,9 @@ func (s service) GetUserFromToken(token string) (User, error) {
 	user, err := s.repo.CurrentUser(claims.Email)
 	if err != nil {
 		return User{}, errors.New("user not found")
-		//respondWithError(c, http.StatusUnauthorized, "user not found")
 	}
 
 	return user, nil
-}
-
-func getToken(c *gin.Context) (string, error) {
-	token, err := c.Cookie("token")
-	if err != nil {
-		auth := strings.SplitN(c.Request.Header.Get("Authorization"), " ", 2)
-
-		if len(auth) != 2 || auth[0] != "Bearer" {
-			respondWithError(c, http.StatusUnauthorized, err.Error())
-		} else {
-			token = auth[1]
-		}
-	}
-	return token, nil
 }
 
 func (s service) RequiresAuth(profile AuthProfile) gin.HandlerFunc {
@@ -94,12 +77,22 @@ func (s service) RequiresAuth(profile AuthProfile) gin.HandlerFunc {
 			respondWithError(c, http.StatusUnauthorized, "user does not have privileges to perform this action")
 		}
 
-		session, _ := store.Get(c.Request, "session")
-		session.Values["email"] = user.Email
-		session.Save(c.Request, c.Writer)
-
 		c.Next()
 	}
+}
+
+func getToken(c *gin.Context) (string, error) {
+	token, err := c.Cookie("token")
+	if err != nil {
+		auth := strings.SplitN(c.Request.Header.Get("Authorization"), " ", 2)
+
+		if len(auth) != 2 || auth[0] != "Bearer" {
+			respondWithError(c, http.StatusUnauthorized, err.Error())
+		} else {
+			token = auth[1]
+		}
+	}
+	return token, nil
 }
 
 func validate(t *jwt.Token) (interface{}, error) {
