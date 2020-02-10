@@ -13,9 +13,9 @@ type repository struct {
 }
 
 func (r repository) CurrentUser(email string) (User, error) {
-	row := r.db.QueryRow("select id, role, email from users where email = ?", email)
+	row := r.db.QueryRow("select id, role, email, name from users where email = ?", email)
 	var u User
-	err := row.Scan(&u.ID, &u.Role, &u.Email)
+	err := row.Scan(&u.ID, &u.Role, &u.Email, &u.Name)
 	if err != nil {
 		return u, err
 	}
