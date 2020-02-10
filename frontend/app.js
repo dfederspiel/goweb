@@ -2,6 +2,7 @@
 import ReactDOM from 'react-dom';
 import {BrowserRouter as Router, Route} from "react-router-dom";
 
+
 /*
  * Create form to request access token from Google's OAuth 2.0 server.
  */
@@ -38,48 +39,24 @@ function oauthSignIn() {
     form.submit();
 }
 
-function Callback() {
-    console.log(window.location.search)
-}
 
 function Home() {
-
-    var search = location.hash.substr(1);
-    console.log(search)
-    if (search !== '') {
-        var searchObj = JSON.parse('{"' + search.replace(/&/g, '","').replace(/=/g, '":"') + '"}', function (key, value) {
-            return key === "" ? value : decodeURIComponent(value)
-        })
-        console.log(searchObj)
-    }
-
-    return <div>I'm home, bitches! <a onClick={oauthSignIn}>Login</a></div>
+    return <div>I'm home! <a id="user-login" onClick={oauthSignIn}>Login</a></div>
 }
 
+function App() {
+    return (
+        <Router>
+            <div>
 
-class App extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            animals: []
-        };
+                <Route path="/">
+                    <Home/>
+                </Route>
 
-    }
+            </div>
+        </Router>
 
-    render() {
-        return (
-            <Router>
-                <div>
-
-                    <Route path="/">
-                        <Home/>
-                    </Route>
-
-                </div>
-            </Router>
-
-        )
-    }
+    )
 }
 
 

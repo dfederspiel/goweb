@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "10c5e3c3-5a36-4715-9364-f429248d4b15",
+		"_postman_id": "986263ed-dd0a-4479-a972-24e509612f9c",
 		"name": "Golang Training",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -8,15 +8,25 @@
 		{
 			"name": "Get Animals",
 			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{api}}/animals",
+					"raw": "{{api}}/pets",
 					"host": [
 						"{{api}}"
 					],
 					"path": [
-						"animals"
+						"pets"
 					]
 				}
 			},
@@ -25,16 +35,26 @@
 		{
 			"name": "Get Animal",
 			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{api}}/animal/2",
+					"raw": "{{api}}/pet/1",
 					"host": [
 						"{{api}}"
 					],
 					"path": [
-						"animal",
-						"2"
+						"pet",
+						"1"
 					]
 				}
 			},
@@ -43,6 +63,16 @@
 		{
 			"name": "Update Animal",
 			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
 				"method": "PUT",
 				"header": [
 					{
@@ -54,7 +84,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"name\": \"rewet\",\r\n    \"age\": 2,\r\n    \"legs\": false\r\n}",
+					"raw": "{\r\n    \"name\": \"Lonnie\",\r\n    \"age\": 5,\r\n    \"legs\": true\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -62,13 +92,13 @@
 					}
 				},
 				"url": {
-					"raw": "{{api}}/animal/2",
+					"raw": "{{api}}/pet/1",
 					"host": [
 						"{{api}}"
 					],
 					"path": [
-						"animal",
-						"2"
+						"pet",
+						"1"
 					]
 				}
 			},
@@ -77,16 +107,26 @@
 		{
 			"name": "Delete Animal",
 			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "{{api}}/animal/2",
+					"raw": "{{api}}/pet/1",
 					"host": [
 						"{{api}}"
 					],
 					"path": [
-						"animal",
-						"2"
+						"pet",
+						"1"
 					]
 				}
 			},
@@ -95,6 +135,16 @@
 		{
 			"name": "Create Animal",
 			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
 				"method": "POST",
 				"header": [
 					{
@@ -106,7 +156,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"name\": \"Punky\",\n\t\"age\": 42,\n\t\"legs\": true\n}",
+					"raw": "{\n\t\"name\": \"Rick\",\n\t\"age\": 62,\n\t\"legs\": true\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -114,12 +164,12 @@
 					}
 				},
 				"url": {
-					"raw": "{{api}}/animal",
+					"raw": "{{api}}/pet",
 					"host": [
 						"{{api}}"
 					],
 					"path": [
-						"animal"
+						"pet"
 					]
 				}
 			},
@@ -150,9 +200,15 @@
 	],
 	"variable": [
 		{
-			"id": "ff43a15a-5b38-4655-a093-0c74c7d67e2d",
+			"id": "78453656-d6e3-4114-b350-1b775226ac79",
 			"key": "api",
 			"value": "http://localhost:8080/api/v1",
+			"type": "string"
+		},
+		{
+			"id": "6b2ca858-de27-4d1d-9ef9-f5cd15103770",
+			"key": "token",
+			"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6ImQ4ZWZlYTFmNjZlODdiYjM2YzJlYTA5ZDgzNzMzOGJkZDgxMDM1M2IiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiI5MDQ0NTg0MDEzNS05OW1odjY1bzhtNWt0M242djQ2aDZrMWMyaWUwZXVtMS5hcHBzLmdvb2dsZXVzZXJjb250ZW50LmNvbSIsImF1ZCI6IjkwNDQ1ODQwMTM1LTk5bWh2NjVvOG01a3QzbjZ2NDZoNmsxYzJpZTBldW0xLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwic3ViIjoiMTE2Njg2ODgzNDUyNDYwMjQ2MTg3IiwiaGQiOiJmZWRlcm5ldC5jb20iLCJlbWFpbCI6ImRhdmlkQGZlZGVybmV0LmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJhdF9oYXNoIjoiT0N5eDdTOExSZ3IyZU81eGNYMmFwUSIsIm5hbWUiOiJEYXZpZCBGZWRlcnNwaWVsIiwicGljdHVyZSI6Imh0dHBzOi8vbGgzLmdvb2dsZXVzZXJjb250ZW50LmNvbS9hLS9BQXVFN21CV05YYWc1VHJnNEpSMWw5Z05WeUxwMmtxeUtnZkN2dEg2V1ZqWm9nPXM5Ni1jIiwiZ2l2ZW5fbmFtZSI6IkRhdmlkIiwiZmFtaWx5X25hbWUiOiJGZWRlcnNwaWVsIiwibG9jYWxlIjoiZW4iLCJpYXQiOjE1ODEzMDMyMzksImV4cCI6MTU4MTMwNjgzOX0.nJzsJTpsPYKdIh-p4lDFtHJQleFH5NTlfjqvrAhXdXlG4QME31WboXw8SmqZQjV3FzGHOaldAgupDgs17Xp6tm0kzuniKRpPTTP8OlntGKvH-54Xp0XM5dJh1ALo-KRNhOwmZmiqBgeu3PMmD9i-OA9qMJ2x8me3dU6PKal7eu8g9KTAyi5iICoUxgAGXc1NLWrxxK0sO2sF99QQ5-eTqNoHsAIDrdn3-rpUhT-VnWVCOBps4E6wTXzrtx9Mu1e2C_SYpIc410ZztrRETUM-JwaiXudY3N1JdKef6gwuAu209PmooOX6dhQ_WVo0JikudaHCJEU6ufvRNFrsOUrP8A",
 			"type": "string"
 		}
 	],

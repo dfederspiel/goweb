@@ -2,37 +2,31 @@ package v2
 
 import (
 	"database/sql"
-	jwtmiddleware "github.com/auth0/go-jwt-middleware"
-	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"os"
+	"rsi.com/go-training/api/v2/auth"
 	"rsi.com/go-training/api/v2/pet"
 )
 
-var jwtMiddleware = jwtmiddleware.New(jwtmiddleware.Options{
-	ValidationKeyGetter: func(token *jwt.Token) (interface{}, error) {
-		return []byte("AIzaSyDttqL8yqdk2tBjW6tJki5s_uVPf3jfYP8"), nil
-	},
-	SigningMethod: jwt.SigningMethodHS256,
-})
+var (
+	authRepo    auth.Repository
+	authService auth.Service
+	authHandler auth.Handler
+)
 
-func checkJWT() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		cookie, _ := c.Cookie("token")
-		c.Request.Header.Set("Authorization", "Bearer "+cookie)
-		jwtMid := *jwtMiddleware
-		if err := jwtMid.CheckJWT(c.Writer, c.Request); err != nil {
-			c.AbortWithStatus(401)
-		}
-	}
-}
 func Register(db *sql.DB, engine *gin.Engine) {
+
+	authRepo = auth.NewRespository(db)
+	authService = auth.NewService(authRepo)
+	authHandler = auth.NewHandler(authService)
+
+	authService.RegisterOauthCallbackRoute(engine)
+
 	api := engine.Group(os.Getenv("API"))
 	{
 		group := api.Group("/v2")
 		{
 			ConfigurePetRoutes(db, group)
-			//ConfigureOwnerRoutes
 		}
 	}
 }
@@ -42,9 +36,13 @@ func ConfigurePetRoutes(db *sql.DB, group *gin.RouterGroup) {
 	petService := pet.NewService(petRepo)
 	petHandler := pet.NewHandler(petService)
 
-	group.GET("/pets", checkJWT(), petHandler.Get)
+	group.Use(authService.RequiresAuth(auth.AuthProfile{auth.RoleBasicUser}))
+
+	group.GET("/user", authHandler.Get)
+
+	group.GET("/pets", petHandler.Get)
 	group.GET("/pet/:id", petHandler.GetById)
-	group.POST("/pet", petHandler.Create)
-	group.PUT("/pet/:id", petHandler.Update)
-	group.DELETE("/pet/:id", petHandler.Delete)
+	group.POST("/pet", authService.RequiresAuth(auth.AuthProfile{RoleRequired: auth.RoleAdministrator}), petHandler.Create)
+	group.PUT("/pet/:id", authService.RequiresAuth(auth.AuthProfile{RoleRequired: auth.RoleAdministrator}), petHandler.Update)
+	group.DELETE("/pet/:id", authService.RequiresAuth(auth.AuthProfile{RoleRequired: auth.RoleAdministrator}), petHandler.Delete)
 }
