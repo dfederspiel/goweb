@@ -30,7 +30,6 @@ func initializeDB(dataSource string) {
 
 func startServer() {
 	engine = gin.Default()
-
 	RegisterMiddleware(engine)
 
 	v1.Register(engine)

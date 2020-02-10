@@ -4,8 +4,8 @@ import (
 	"database/sql"
 	"github.com/gin-gonic/gin"
 	"os"
-	"rsi.com/go-training/api/v2/auth"
 	"rsi.com/go-training/api/v2/pet"
+	"rsi.com/go-training/auth"
 )
 
 var (
