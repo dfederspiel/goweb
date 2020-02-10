@@ -8,6 +8,18 @@ body {
     margin: 20rem auto;
 }
 
+a:not([href]):not([tabindex]) {
+    text-decoration: underline;
+    color: #369;
+    cursor: pointer;
+
+    &:hover {
+        text-decoration: underline;
+        color: #369;
+        cursor: pointer;
+    }
+}
+
 .expand {
     .content { display: none; }
     transition: all 1s;

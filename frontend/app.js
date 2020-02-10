@@ -1,4 +1,4 @@
-﻿import React from 'react';
+﻿import React, {useState} from 'react';
 import ReactDOM from 'react-dom';
 import {BrowserRouter as Router, Route} from "react-router-dom";
 
@@ -39,9 +39,29 @@ function oauthSignIn() {
     form.submit();
 }
 
+const getActiveUser = async (setUser) => {
+    try {
+        var response = await fetch("/api/v2/user")
+        if(response.status != 401){
+            var json = await response.json()
+            console.log(json)
+            setUser(json.email)
+        }
+    } catch {
+        console.log("uh-oh")
+    }
+}
 
 function Home() {
-    return <div>I'm home! <a id="user-login" onClick={oauthSignIn}>Login</a></div>
+
+    const [user, setUser] = useState("")
+
+    getActiveUser(setUser)
+
+    if(user == "")
+        return <div>Welcome! Please <a id="user-login" onClick={oauthSignIn}>log in</a> to continue </div>
+    else 
+        return <div>Hello, {user}</div>
 }
 
 function App() {

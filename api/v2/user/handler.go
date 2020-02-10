@@ -1,4 +1,4 @@
-package auth
+package user
 
 import (
 	"github.com/gin-gonic/gin"
@@ -6,15 +6,15 @@ import (
 )
 
 type Handler interface {
-	Get(c *gin.Context)
+	GetByEmail(c *gin.Context)
 }
 
 type handler struct {
 	service Service
 }
 
-func (h handler) Get(c *gin.Context) {
-	user, _ := h.service.Get(c)
+func (h handler) GetByEmail(c *gin.Context) {
+	user, _ := h.service.GetByEmail(c.Param("email"))
 	c.JSON(http.StatusOK, user)
 }
 

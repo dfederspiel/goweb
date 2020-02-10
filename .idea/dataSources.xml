@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="goweb" uuid="48df31be-dace-457d-a65e-92c33ab350bd">
+    <data-source source="LOCAL" name="goweb" uuid="0a0305ea-be3f-465e-9b19-8c58c238b655">
       <driver-ref>sqlite.xerial</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
-      <jdbc-url>jdbc:sqlite:C:\Users\david\go\src\goweb\db\goweb.db</jdbc-url>
+      <jdbc-url>jdbc:sqlite:C:\Users\david.federspiel\go\src\goweb\db\goweb.db</jdbc-url>
       <libraries>
         <library>
           <url>file://$APPLICATION_CONFIG_DIR$/jdbc-drivers/Xerial SQLiteJDBC/3.25.1/license.txt</url>

@@ -4,41 +4,45 @@ import (
 	"database/sql"
 	"github.com/gin-gonic/gin"
 	"os"
+	"rsi.com/go-training/api/v2/auth"
 	"rsi.com/go-training/api/v2/pet"
-	"rsi.com/go-training/auth"
-)
-
-var (
-	authRepo    auth.Repository
-	authService auth.Service
-	authHandler auth.Handler
+	"rsi.com/go-training/api/v2/user"
 )
 
 func Register(db *sql.DB, engine *gin.Engine) {
 
-	authRepo = auth.NewRespository(db)
-	authService = auth.NewService(authRepo)
-	authHandler = auth.NewHandler(authService)
+	authRepo := auth.NewRespository(db)
+	authService := auth.NewService(authRepo)
+	authHandler := auth.NewHandler(authService)
 
-	authService.RegisterOauthCallbackRoute(engine)
+	engine.GET("/callback", authHandler.Callback)
 
 	api := engine.Group(os.Getenv("API"))
 	{
 		group := api.Group("/v2")
 		{
-			ConfigurePetRoutes(db, group)
+			group.GET("/user", authHandler.CurrentUser)
+			ConfigurePetRoutes(db, group, authService)
+			ConfigureUserRoutes(db, group)
 		}
 	}
 }
 
-func ConfigurePetRoutes(db *sql.DB, group *gin.RouterGroup) {
+func ConfigureUserRoutes(db *sql.DB, group *gin.RouterGroup) {
+	userRepo := user.NewRepository(db)
+	userService := user.NewService(userRepo)
+	userHandler := user.NewHandler(userService)
+
+	group.GET("/user/:email", userHandler.GetByEmail)
+
+}
+
+func ConfigurePetRoutes(db *sql.DB, group *gin.RouterGroup, authService auth.Service) {
 	petRepo := pet.NewRepository(db)
 	petService := pet.NewService(petRepo)
 	petHandler := pet.NewHandler(petService)
 
-	group.Use(authService.RequiresAuth(auth.AuthProfile{auth.RoleBasicUser}))
-
-	group.GET("/user", authHandler.Get)
+	group.Use(authService.RequiresAuth(auth.AuthProfile{RoleRequired: auth.RoleBasicUser}))
 
 	group.GET("/pets", petHandler.Get)
 	group.GET("/pet/:id", petHandler.GetById)
