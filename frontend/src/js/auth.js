@@ -32,14 +32,15 @@ export default function oauthSignIn() {
 }
 
 export const getActiveUser = async (setUser) => {
-    try {
-        var response = await fetch("/api/v2/user")
-        if(response.status != 401){
-            var json = await response.json()
-            console.log(json)
-            setUser(json.name)
-        }
-    } catch {
-        console.log("uh-oh")
+    var response = await fetch("/api/v2/user")
+    if (response.status != 401) {
+        var json = await response.json()
+        console.log(json)
+        setUser(json.name)
     }
+}
+
+export const logout = async () => {
+    //var response = await fetch("/logout")
+    window.location.href = "/logout"
 }
