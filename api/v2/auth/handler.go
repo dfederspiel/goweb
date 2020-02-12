@@ -63,9 +63,10 @@ func (h handler) Logout(c *gin.Context) {
 		Name:     "token",
 		Value:    "",
 		MaxAge:   -1,
+		Path:     "/",
 		HttpOnly: true,
 	})
-	c.Redirect(http.StatusMovedPermanently, "/")
+	c.Redirect(http.StatusPermanentRedirect, "/")
 }
 
 func NewHandler(service Service) Handler {
