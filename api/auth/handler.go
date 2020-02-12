@@ -14,6 +14,7 @@ type Handler interface {
 	CurrentUser(c *gin.Context)
 	Callback(c *gin.Context)
 	Logout(c *gin.Context)
+	RequiresAuth(profile AuthProfile) gin.HandlerFunc
 }
 
 type handler struct {
@@ -23,6 +24,36 @@ type handler struct {
 func (h handler) CurrentUser(c *gin.Context) {
 	user, _ := h.service.CurrentUser(c)
 	c.JSON(http.StatusOK, user)
+}
+
+func (h handler) RequiresAuth(profile AuthProfile) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		token, err := getToken(c)
+
+		if err != nil {
+			if err == http.ErrNoCookie {
+				// If the cookie is not set, return an unauthorized status
+				c.Status(http.StatusUnauthorized)
+				respondWithError(c, http.StatusUnauthorized, err.Error())
+				return
+			}
+			// For any other type of error, return a bad request status
+			respondWithError(c, http.StatusUnauthorized, err.Error())
+			c.Status(http.StatusBadRequest)
+			return
+		}
+
+		user, err := h.service.GetUserFromToken(token)
+		if err != nil {
+			respondWithError(c, http.StatusUnauthorized, err.Error())
+		}
+
+		if user.Role > profile.RoleRequired {
+			respondWithError(c, http.StatusUnauthorized, "user does not have privileges to perform this action")
+		}
+
+		c.Next()
+	}
 }
 
 func (h handler) Callback(c *gin.Context) {

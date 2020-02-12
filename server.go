@@ -8,8 +8,11 @@ import (
 	"github.com/semihalev/gin-stats"
 	"log"
 	"net/http"
+	"os"
+	"rsi.com/go-training/api/auth"
 	"rsi.com/go-training/api/v1"
 	"rsi.com/go-training/api/v2"
+	v3 "rsi.com/go-training/api/v3"
 	"rsi.com/go-training/data"
 	"time"
 )
@@ -35,10 +38,15 @@ func initializeDB(dataSource string) {
 
 func startServer() {
 	engine = gin.Default()
-	RegisterMiddleware(engine)
+	registerMiddleware(engine)
+
+	authHandler := configureOauth()
 
 	v1.Register(engine)
-	v2.Register(db, engine)
+	v2.Register(db, engine, authHandler)
+
+	api := v3.NewApi(db, engine, authHandler)
+	api.Register(os.Getenv("API"))
 
 	err := engine.Run()
 	if err != nil {
@@ -46,7 +54,18 @@ func startServer() {
 	}
 }
 
-func RegisterMiddleware(g *gin.Engine) {
+func configureOauth() auth.Handler {
+	authRepo := auth.NewRespository(db)
+	authService := auth.NewService(authRepo)
+	authHandler := auth.NewHandler(authService)
+
+	engine.GET("/callback", authHandler.Callback)
+	engine.POST("/logout", authHandler.Logout)
+
+	return authHandler
+}
+
+func registerMiddleware(g *gin.Engine) {
 	configureStaticDirectoryMiddleware(g)
 	configureStatsMiddleware(g)
 	configureCORSMiddleware(g)

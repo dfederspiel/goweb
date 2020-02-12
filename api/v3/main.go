@@ -1,27 +1,33 @@
-package v2
+package v3
 
 import (
 	"database/sql"
 	"github.com/gin-gonic/gin"
-	"os"
 	"rsi.com/go-training/api/auth"
-	"rsi.com/go-training/api/v2/pet"
-	"rsi.com/go-training/api/v2/user"
+	"rsi.com/go-training/api/interfaces"
+	"rsi.com/go-training/api/v3/pet"
+	"rsi.com/go-training/api/v3/user"
 )
 
-func Register(db *sql.DB, engine *gin.Engine, authHandler auth.Handler) {
-	api := engine.Group(os.Getenv("API"))
+type api struct {
+	db          *sql.DB
+	engine      *gin.Engine
+	authHandler auth.Handler
+}
+
+func (a api) Register(prefix string) {
+	api := a.engine.Group(prefix)
 	{
-		group := api.Group("/v2")
+		group := api.Group("/v3")
 		{
-			group.GET("/user", authHandler.CurrentUser)
-			ConfigurePetRoutes(db, group, authHandler)
-			ConfigureUserRoutes(db, group, authHandler)
+			group.GET("/user", a.authHandler.CurrentUser)
+			ConfigurePetRoutes(a.db, group, a.authHandler)
+			ConfigureUserRoutes(a.db, group)
 		}
 	}
 }
 
-func ConfigureUserRoutes(db *sql.DB, group *gin.RouterGroup, authHandler auth.Handler) {
+func ConfigureUserRoutes(db *sql.DB, group *gin.RouterGroup) {
 	userRepo := user.NewRepository(db)
 	userService := user.NewService(userRepo)
 	userHandler := user.NewHandler(userService)
@@ -42,4 +48,8 @@ func ConfigurePetRoutes(db *sql.DB, group *gin.RouterGroup, authHandler auth.Han
 	group.POST("/pet", authHandler.RequiresAuth(auth.AuthProfile{RoleRequired: auth.RoleAdministrator}), petHandler.Create)
 	group.PUT("/pet/:id", authHandler.RequiresAuth(auth.AuthProfile{RoleRequired: auth.RoleAdministrator}), petHandler.Update)
 	group.DELETE("/pet/:id", authHandler.RequiresAuth(auth.AuthProfile{RoleRequired: auth.RoleAdministrator}), petHandler.Delete)
+}
+
+func NewApi(db *sql.DB, engine *gin.Engine, authHandler auth.Handler) interfaces.Api {
+	return &api{db, engine, authHandler}
 }
