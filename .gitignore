@@ -16,3 +16,4 @@ oidc.json
 # vendor/
 go-training
 /www/
+/data/goweb.db

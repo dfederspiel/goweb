@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"rsi.com/go-training/api/v1"
 	"rsi.com/go-training/api/v2"
+	"rsi.com/go-training/data"
 	"time"
 )
 
@@ -17,8 +18,12 @@ var engine *gin.Engine
 var db *sql.DB
 
 func initializeDB(dataSource string) {
-	d, err := sql.Open("sqlite3", dataSource)
-	db = d
+	database, err := sql.Open("sqlite3", dataSource)
+	db = database
+
+	seeder := data.NewSeeder(db)
+	seeder.Seed()
+
 	if err != nil {
 		log.Panic(err)
 	}
