@@ -336,184 +336,230 @@
 			"name": "v3",
 			"item": [
 				{
-					"name": "Get Animals",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{token}}",
-									"type": "string"
+					"name": "pets",
+					"item": [
+						{
+							"name": "Get Animals",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{api}}/v3/pets",
+									"host": [
+										"{{api}}"
+									],
+									"path": [
+										"v3",
+										"pets"
+									]
 								}
-							]
+							},
+							"response": []
 						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{api}}/v3/pets",
-							"host": [
-								"{{api}}"
-							],
-							"path": [
-								"v3",
-								"pets"
-							]
+						{
+							"name": "Get Animal",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{api}}/v3/pet/1",
+									"host": [
+										"{{api}}"
+									],
+									"path": [
+										"v3",
+										"pet",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Animal",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Lonnie\",\r\n    \"age\": 5,\r\n    \"legs\": true\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{api}}/v3/pet/1",
+									"host": [
+										"{{api}}"
+									],
+									"path": [
+										"v3",
+										"pet",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Animal",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{api}}/v3/pet/1",
+									"host": [
+										"{{api}}"
+									],
+									"path": [
+										"v3",
+										"pet",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create Animal",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"name\": \"Rick\",\n\t\"age\": 62,\n\t\"legs\": true\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{api}}/v3/pet",
+									"host": [
+										"{{api}}"
+									],
+									"path": [
+										"v3",
+										"pet"
+									]
+								}
+							},
+							"response": []
 						}
-					},
-					"response": []
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
 				},
 				{
-					"name": "Get Animal",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{token}}",
-									"type": "string"
+					"name": "users",
+					"item": [
+						{
+							"name": "Current User",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": ""
 								}
-							]
+							},
+							"response": []
 						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{api}}/v3/pet/1",
-							"host": [
-								"{{api}}"
-							],
-							"path": [
-								"v3",
-								"pet",
-								"1"
-							]
+						{
+							"name": "User by Email",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": ""
+								}
+							},
+							"response": []
 						}
-					},
-					"response": []
-				},
-				{
-					"name": "Update Animal",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "PUT",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"Lonnie\",\r\n    \"age\": 5,\r\n    \"legs\": true\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{api}}/v3/pet/1",
-							"host": [
-								"{{api}}"
-							],
-							"path": [
-								"v3",
-								"pet",
-								"1"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete Animal",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "{{api}}/v3/pet/1",
-							"host": [
-								"{{api}}"
-							],
-							"path": [
-								"v3",
-								"pet",
-								"1"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Create Animal",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"name\": \"Rick\",\n\t\"age\": 62,\n\t\"legs\": true\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{api}}/v3/pet",
-							"host": [
-								"{{api}}"
-							],
-							"path": [
-								"v3",
-								"pet"
-							]
-						}
-					},
-					"response": []
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
 				}
 			],
 			"protocolProfileBehavior": {}
 		}
 	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{token}}",
+				"type": "string"
+			}
+		]
+	},
 	"event": [
 		{
 			"listen": "prerequest",
@@ -538,13 +584,13 @@
 	],
 	"variable": [
 		{
-			"id": "e514d291-a3f3-4334-8f5a-ca4efdf4368b",
+			"id": "7f62186f-1f1e-4814-859b-df5b06ebd247",
 			"key": "api",
 			"value": "http://localhost:8080/api/v1",
 			"type": "string"
 		},
 		{
-			"id": "687de2df-805a-4cb4-bc35-29da97db663f",
+			"id": "7205a5cd-ad90-45a9-a3bb-e935f494829c",
 			"key": "token",
 			"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6ImQ4ZWZlYTFmNjZlODdiYjM2YzJlYTA5ZDgzNzMzOGJkZDgxMDM1M2IiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiI5MDQ0NTg0MDEzNS05OW1odjY1bzhtNWt0M242djQ2aDZrMWMyaWUwZXVtMS5hcHBzLmdvb2dsZXVzZXJjb250ZW50LmNvbSIsImF1ZCI6IjkwNDQ1ODQwMTM1LTk5bWh2NjVvOG01a3QzbjZ2NDZoNmsxYzJpZTBldW0xLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwic3ViIjoiMTE2Njg2ODgzNDUyNDYwMjQ2MTg3IiwiaGQiOiJmZWRlcm5ldC5jb20iLCJlbWFpbCI6ImRhdmlkQGZlZGVybmV0LmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJhdF9oYXNoIjoiT0N5eDdTOExSZ3IyZU81eGNYMmFwUSIsIm5hbWUiOiJEYXZpZCBGZWRlcnNwaWVsIiwicGljdHVyZSI6Imh0dHBzOi8vbGgzLmdvb2dsZXVzZXJjb250ZW50LmNvbS9hLS9BQXVFN21CV05YYWc1VHJnNEpSMWw5Z05WeUxwMmtxeUtnZkN2dEg2V1ZqWm9nPXM5Ni1jIiwiZ2l2ZW5fbmFtZSI6IkRhdmlkIiwiZmFtaWx5X25hbWUiOiJGZWRlcnNwaWVsIiwibG9jYWxlIjoiZW4iLCJpYXQiOjE1ODEzMDMyMzksImV4cCI6MTU4MTMwNjgzOX0.nJzsJTpsPYKdIh-p4lDFtHJQleFH5NTlfjqvrAhXdXlG4QME31WboXw8SmqZQjV3FzGHOaldAgupDgs17Xp6tm0kzuniKRpPTTP8OlntGKvH-54Xp0XM5dJh1ALo-KRNhOwmZmiqBgeu3PMmD9i-OA9qMJ2x8me3dU6PKal7eu8g9KTAyi5iICoUxgAGXc1NLWrxxK0sO2sF99QQ5-eTqNoHsAIDrdn3-rpUhT-VnWVCOBps4E6wTXzrtx9Mu1e2C_SYpIc410ZztrRETUM-JwaiXudY3N1JdKef6gwuAu209PmooOX6dhQ_WVo0JikudaHCJEU6ufvRNFrsOUrP8A",
 			"type": "string"

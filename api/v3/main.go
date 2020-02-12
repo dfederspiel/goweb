@@ -20,20 +20,19 @@ func (a api) Register(prefix string) {
 	{
 		group := api.Group("/v3")
 		{
-			group.GET("/user", a.authHandler.CurrentUser)
 			configurePetRoutes(a.db, group, a.authHandler)
-			configureUserRoutes(a.db, group)
-
+			configureUserRoutes(a.db, group, a.authHandler)
 		}
 	}
 }
 
-func configureUserRoutes(db *sql.DB, group *gin.RouterGroup) {
+func configureUserRoutes(db *sql.DB, group *gin.RouterGroup, authHandler auth.Handler) {
 	userRepo := user.NewRepository(db)
 	userService := user.NewService(userRepo)
 	userHandler := user.NewHandler(userService)
 
-	group.GET("/user/:email", userHandler.GetByEmail)
+	group.GET("/user", authHandler.CurrentUser)
+	group.GET("/user/:email", authHandler.RequiresAuth(auth.AuthProfile{RoleRequired: auth.RoleAdministrator}), userHandler.GetByEmail)
 
 }
 
