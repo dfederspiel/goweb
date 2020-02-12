@@ -13,7 +13,6 @@ import (
 var keySet *jwk.Set
 
 type Service interface {
-	RequiresAuth(profile AuthProfile) gin.HandlerFunc
 	CurrentUser(c *gin.Context) (User, error)
 	GetUserFromToken(token string) (User, error)
 }
@@ -49,36 +48,6 @@ func (s service) GetUserFromToken(token string) (User, error) {
 	}
 
 	return user, nil
-}
-
-func (s service) RequiresAuth(profile AuthProfile) gin.HandlerFunc {
-	return func(c *gin.Context) {
-		token, err := getToken(c)
-
-		if err != nil {
-			if err == http.ErrNoCookie {
-				// If the cookie is not set, return an unauthorized status
-				c.Status(http.StatusUnauthorized)
-				respondWithError(c, http.StatusUnauthorized, err.Error())
-				return
-			}
-			// For any other type of error, return a bad request status
-			respondWithError(c, http.StatusUnauthorized, err.Error())
-			c.Status(http.StatusBadRequest)
-			return
-		}
-
-		user, err := s.GetUserFromToken(token)
-		if err != nil {
-			respondWithError(c, http.StatusUnauthorized, err.Error())
-		}
-
-		if user.Role > profile.RoleRequired {
-			respondWithError(c, http.StatusUnauthorized, "user does not have privileges to perform this action")
-		}
-
-		c.Next()
-	}
 }
 
 func getToken(c *gin.Context) (string, error) {
