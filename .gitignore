@@ -4,6 +4,7 @@
 *.dll
 *.so
 *.dylib
+oidc.json
 
 # Test binary, built with `go test -c`
 *.test
@@ -15,3 +16,4 @@
 # vendor/
 go-training
 /www/
+/data/goweb.db

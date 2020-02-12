@@ -197,6 +197,7 @@ const serve = (callback) => {
     });
     bs.init({
         open: false,
+        https: true,
         notify: true,
         logPrefix: 'Server Says:',
         server: {
@@ -261,7 +262,7 @@ const watch = (done) => {
             })
         });
 
-    gulp.watch(['./src/*.js', './src/js/**/*.js', './src/components/**/*.js', './src/pages/**/*.js'])
+    gulp.watch(['*.js', './src/*.js', './src/js/**/*.js', './src/components/**/*.js', './src/pages/**/*.js'])
         .on('all', function () {
             queue.queue({
                 name: 'Js'

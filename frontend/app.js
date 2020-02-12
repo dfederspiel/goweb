@@ -1,36 +1,37 @@
-﻿import React from 'react';
+﻿import React, {useState, useEffect} from 'react';
 import ReactDOM from 'react-dom';
-import Api from "./src/services/Api";
+import {BrowserRouter as Router, Route} from "react-router-dom";
+import oauthSignIn, {getActiveUser, logout} from './src/js/auth'
 
-class AnimalListing extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            animals: []
-        };
-        Api.fetch("/api/v1/pets").then(r => this.setState({animals: r}));
-    }
+function Home() {
 
+    const [user, setUser] = useState("");
 
-    render() {
+    useEffect(() => {
+        getActiveUser(setUser)
+    }, []);
+
+    if(user === "")
+        return <h1>Welcome! Please&nbsp;<a id="user-login" onClick={oauthSignIn}>log in</a>&nbsp;to continue </h1>
+    else 
         return (
-            <div className="row">
-                {
-                    this.state.animals.map(i => {
-                        return (
-                            <article className="col-md-4" key={i.id}>
-                                <b>{i.name} (id: {i.id})</b>
-                                <p>
-                                    {i.age} years old
-                                </p>
-                            </article>
-                        )
-                    })
-                }
+            <div>
+                <h1>Hello, {user}&nbsp;<form method={"POST"} action="/logout"><button type="submit">Logout</button></form></h1>
             </div>
         )
-    }
+}
+
+function App() {
+    return (
+        <Router>
+            <div>
+                <Route path="/">
+                    <Home/>
+                </Route>
+            </div>
+        </Router>
+    )
 }
 
 
-ReactDOM.render(<AnimalListing/>, document.getElementById("react-container"));
+ReactDOM.render(<App/>, document.getElementById('app'))

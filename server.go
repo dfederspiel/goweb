@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"rsi.com/go-training/api/v1"
 	"rsi.com/go-training/api/v2"
+	"rsi.com/go-training/data"
 	"time"
 )
 
@@ -17,8 +18,12 @@ var engine *gin.Engine
 var db *sql.DB
 
 func initializeDB(dataSource string) {
-	d, err := sql.Open("sqlite3", dataSource)
-	db = d
+	database, err := sql.Open("sqlite3", dataSource)
+	db = database
+
+	seeder := data.NewSeeder(db)
+	seeder.Seed()
+
 	if err != nil {
 		log.Panic(err)
 	}
@@ -30,7 +35,6 @@ func initializeDB(dataSource string) {
 
 func startServer() {
 	engine = gin.Default()
-
 	RegisterMiddleware(engine)
 
 	v1.Register(engine)
@@ -48,8 +52,8 @@ func RegisterMiddleware(g *gin.Engine) {
 	configureCORSMiddleware(g)
 }
 
-func configureCORSMiddleware(g *gin.Engine) gin.IRoutes {
-	return g.Use(cors.Middleware(cors.Config{
+func configureCORSMiddleware(g *gin.Engine) {
+	g.Use(cors.Middleware(cors.Config{
 		Origins:         "*",
 		Methods:         "GET, PUT, POST, DELETE",
 		RequestHeaders:  "Origin, Authorization, Content-Type",
@@ -60,8 +64,8 @@ func configureCORSMiddleware(g *gin.Engine) gin.IRoutes {
 	}))
 }
 
-func configureStaticDirectoryMiddleware(g *gin.Engine) gin.IRoutes {
-	return g.Use(static.Serve("/", static.LocalFile("./www", true)))
+func configureStaticDirectoryMiddleware(g *gin.Engine) {
+	g.Use(static.Serve("/", static.LocalFile("./www", true)))
 }
 
 func configureStatsMiddleware(g *gin.Engine) {
