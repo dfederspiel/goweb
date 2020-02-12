@@ -23,6 +23,7 @@ func (a api) Register(prefix string) {
 			group.GET("/user", a.authHandler.CurrentUser)
 			configurePetRoutes(a.db, group, a.authHandler)
 			configureUserRoutes(a.db, group)
+
 		}
 	}
 }
