@@ -185,7 +185,7 @@ func TestPetService(t *testing.T) {
 	})
 
 	t.Run("delete pet", func(t *testing.T) {
-		req, _ := http.NewRequest("PUT", "/api/v3/pet/1", nil)
+		req, _ := http.NewRequest("DELETE", "/api/v3/pet/1", nil)
 		req.Header.Set("Content-Type", "application/json")
 		router.ServeHTTP(rr, req)
 
