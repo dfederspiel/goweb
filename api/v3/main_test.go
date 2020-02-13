@@ -96,7 +96,11 @@ var (
 )
 
 func init() {
-	router = setupRouter()
+	router = gin.Default()
+	authHandler := NewTestableAuthHandler()
+	a := NewApi(router, authHandler)
+	a.ConfigurePetRoutes(NewTestablePetRepository())
+	a.ConfigureUserRoutes(NewTestableUserRepository())
 	rr = httptest.NewRecorder()
 }
 
@@ -212,13 +216,4 @@ func TestUserService(t *testing.T) {
 			Role:  0,
 		}, u)
 	})
-}
-
-func setupRouter() *gin.Engine {
-	r := gin.Default()
-	auth := NewTestableAuthHandler()
-	a := NewApi(r, auth)
-	a.ConfigurePetRoutes(NewTestablePetRepository())
-	a.ConfigureUserRoutes(NewTestableUserRepository())
-	return r
 }
