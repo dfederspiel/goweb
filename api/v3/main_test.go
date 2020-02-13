@@ -78,17 +78,29 @@ func NewTestableAuthHandler() auth.Handler {
 type testableUserRepository struct{}
 
 func (t testableUserRepository) GetByEmail(email string) (user.User, error) {
-	panic("implement me")
+	return user.User{
+		ID:    "1",
+		Name:  "Buddy",
+		Email: "david@federnet.com",
+		Role:  0,
+	}, nil
 }
 
 func NewTestableUserRepository() user.Repository {
 	return &testableUserRepository{}
 }
 
-func TestPetService(t *testing.T) {
+var (
+	router *gin.Engine
+	rr     *httptest.ResponseRecorder
+)
 
-	router := setupRouter()
-	rr := httptest.NewRecorder()
+func init() {
+	router = setupRouter()
+	rr = httptest.NewRecorder()
+}
+
+func TestPetService(t *testing.T) {
 
 	t.Run("get all pets", func(t *testing.T) {
 		req, _ := http.NewRequest("GET", "/api/v3/pets", nil)
@@ -178,6 +190,27 @@ func TestPetService(t *testing.T) {
 		router.ServeHTTP(rr, req)
 
 		assert.Equal(t, 200, rr.Code)
+	})
+}
+
+func TestUserService(t *testing.T) {
+	t.Run("get user by email", func(t *testing.T) {
+		req, _ := http.NewRequest("GET", "/api/v3/user/david@federnet.com", nil)
+		router.ServeHTTP(rr, req)
+
+		var u user.User
+		err := json.NewDecoder(rr.Body).Decode(&u)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		assert.Equal(t, 200, rr.Code)
+		assert.Equal(t, user.User{
+			ID:    "1",
+			Name:  "Buddy",
+			Email: "david@federnet.com",
+			Role:  0,
+		}, u)
 	})
 }
 

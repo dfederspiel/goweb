@@ -1,8 +1,8 @@
 package user
 
 type User struct {
-	ID    string `json:"id""`
-	Name  string `json:"id"`
+	ID    string `json:"id"`
+	Name  string `json:"name"`
 	Email string `json:"email"`
 	Role  Role   `json:"role"`
 }
