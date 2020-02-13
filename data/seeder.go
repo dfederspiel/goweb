@@ -15,10 +15,9 @@ type seeder struct {
 
 const (
 	usersTable = `
-		drop table if exists users;
-		create table users
+		create table if not exists users
 		(
-			id    INTEGER
+			id    integer
 				primary key autoincrement
 				unique,
 			role  integer default 1,
@@ -29,16 +28,15 @@ const (
 		INSERT INTO users (id, role, email, name) VALUES (2, 0, 'david.federspiel@ruralsourcing.com', 'David (RSI) Federspiel');`
 
 	petsTable = `
-		drop table if exists pets;
-		create table pets
+		create table if not exists pets
 		(
-			id    INTEGER
+			id    integer
 				primary key autoincrement
 				unique,
-			name  VARCHAR(50),
-			age   INTEGER,
-			legs  BOOLEAN,
-			color VARCHAR(50)
+			name  varchar(50),
+			age   integer,
+			legs  integer, -- boolean
+			color varchar(50)
 		);
 		INSERT INTO pets (id, name, age, legs, color) VALUES (1, 'Lonnie', 5, 1, 'Beige');
 		INSERT INTO pets (id, name, age, legs, color) VALUES (2, 'Rick', 6, 1, 'Brown');

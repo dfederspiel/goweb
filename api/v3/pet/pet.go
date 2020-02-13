@@ -7,3 +7,5 @@ type Pet struct {
 	Legs  bool   `json:"legs"`
 	Color string `json:"color"`
 }
+
+func init() {}

@@ -29,8 +29,11 @@ func (h handler) GetById(c *gin.Context) {
 
 func (h handler) Create(c *gin.Context) {
 	p := Pet{}
-	c.Bind(&p)
-	err := h.service.Create(&p)
+	err := c.Bind(&p)
+	if err != nil {
+		c.Status(http.StatusInternalServerError)
+	}
+	err = h.service.Create(&p)
 	if err != nil {
 		c.Status(http.StatusInternalServerError)
 	}

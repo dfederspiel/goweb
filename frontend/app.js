@@ -13,7 +13,7 @@ function Home() {
 
     if(user === "")
         return <h1>Welcome! Please&nbsp;<a id="user-login" onClick={oauthSignIn}>log in</a>&nbsp;to continue </h1>
-    else 
+    else
         return (
             <div>
                 <h1>Hello, {user}&nbsp;<form method={"POST"} action="/logout"><button type="submit">Logout</button></form></h1>
@@ -32,6 +32,5 @@ function App() {
         </Router>
     )
 }
-
 
 ReactDOM.render(<App/>, document.getElementById('app'))

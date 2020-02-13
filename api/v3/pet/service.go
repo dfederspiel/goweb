@@ -21,17 +21,17 @@ func (s service) GetById(id string) (*Pet, error) {
 }
 
 func (s service) Create(pet *Pet) (err error) {
-	s.repo.Create(pet)
+	err = s.repo.Create(pet)
 	return
 }
 
 func (s service) Update(pet *Pet) (err error) {
-	s.repo.Update(pet)
+	err = s.repo.Update(pet)
 	return
 }
 
 func (s service) DeleteById(id string) (err error) {
-	s.repo.DeleteById(id)
+	err = s.repo.DeleteById(id)
 	return
 }
 

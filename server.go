@@ -8,11 +8,12 @@ import (
 	"github.com/semihalev/gin-stats"
 	"log"
 	"net/http"
-	"os"
 	"rsi.com/go-training/api/auth"
 	"rsi.com/go-training/api/v1"
 	"rsi.com/go-training/api/v2"
-	v3 "rsi.com/go-training/api/v3"
+	"rsi.com/go-training/api/v3"
+	"rsi.com/go-training/api/v3/pet"
+	"rsi.com/go-training/api/v3/user"
 	"rsi.com/go-training/data"
 	"time"
 )
@@ -22,17 +23,18 @@ var db *sql.DB
 
 func initializeDB(dataSource string) {
 	database, err := sql.Open("sqlite3", dataSource)
+	if err != nil {
+		log.Panic(err)
+	}
 	db = database
 
 	seeder := data.NewSeeder(db)
 	seeder.Seed()
 
-	if err != nil {
-		log.Panic(err)
-	}
 	if err = db.Ping(); err != nil {
 		log.Panic(err)
 	}
+
 	v1.ConfigureDB(db)
 }
 
@@ -45,13 +47,18 @@ func startServer() {
 	v1.Register(engine)
 	v2.Register(db, engine, authHandler)
 
-	api := v3.NewApi(db, engine, authHandler)
-	api.Register(os.Getenv("API"))
+	configureV3Api(authHandler)
 
 	err := engine.Run()
 	if err != nil {
 		panic(err)
 	}
+}
+
+func configureV3Api(authHandler auth.Handler) {
+	api := v3.NewApi(engine, authHandler)
+	api.ConfigurePetRoutes(pet.NewRepository(db))
+	api.ConfigureUserRoutes(user.NewRepository(db))
 }
 
 func configureOauth() auth.Handler {
