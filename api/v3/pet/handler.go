@@ -3,6 +3,7 @@ package pet
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"rsi.com/go-training/models"
 )
 
 type Handler interface {
@@ -28,7 +29,7 @@ func (h handler) GetById(c *gin.Context) {
 }
 
 func (h handler) Create(c *gin.Context) {
-	p := Pet{}
+	p := models.Pet{}
 	err := c.ShouldBindJSON(&p)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
@@ -45,7 +46,7 @@ func (h handler) Create(c *gin.Context) {
 }
 
 func (h handler) Update(c *gin.Context) {
-	var p Pet
+	var p models.Pet
 	p.ID = c.Param("id")
 	_ = c.BindJSON(&p)
 

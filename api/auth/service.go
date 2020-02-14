@@ -7,14 +7,15 @@ import (
 	"github.com/lestrrat/go-jwx/jwk"
 	"github.com/pkg/errors"
 	"net/http"
+	"rsi.com/go-training/models"
 	"strings"
 )
 
 var keySet *jwk.Set
 
 type Service interface {
-	CurrentUser(c *gin.Context) (User, error)
-	GetUserFromToken(token string) (User, error)
+	CurrentUser(c *gin.Context) (models.User, error)
+	GetUserFromToken(token string) (models.User, error)
 }
 
 type service struct {
@@ -25,26 +26,26 @@ func NewService(r Repository) Service {
 	return &service{r}
 }
 
-func (s service) CurrentUser(c *gin.Context) (User, error) {
+func (s service) CurrentUser(c *gin.Context) (models.User, error) {
 	token, _ := getToken(c)
 	user, _ := s.GetUserFromToken(token)
 	return user, nil
 }
 
-func (s service) GetUserFromToken(token string) (User, error) {
+func (s service) GetUserFromToken(token string) (models.User, error) {
 	if token == "" {
-		return User{}, errors.New("token missing")
+		return models.User{}, errors.New("token missing")
 	}
 
-	claims := &Claims{}
+	claims := &models.Claims{}
 	_, err := jwt.ParseWithClaims(token, claims, validate)
 	if err != nil {
-		return User{}, err
+		return models.User{}, err
 	}
 
 	user, err := s.repo.CurrentUser(claims.Email)
 	if err != nil {
-		return User{}, errors.New("user not found")
+		return models.User{}, errors.New("user not found")
 	}
 
 	return user, nil

@@ -25,14 +25,13 @@ export default function oauthSignIn() {
         input.setAttribute('value', params[p]);
         form.appendChild(input);
     }
-
     // Add form to page and submit it to open the OAuth 2.0 endpoint.
     document.body.appendChild(form);
     form.submit();
 }
 
 export const getActiveUser = (setUser) => {
-    fetch("/api/v2/user").then(async r => {
+    fetch("/api/v3/user").then(async r => {
         if (r.status !== 401) {
             let json = await r.json()
             setUser(json.name)

@@ -9,7 +9,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
-	"rsi.com/go-training/api/auth"
+	"rsi.com/go-training/mocks"
+	"rsi.com/go-training/models"
 	"testing"
 )
 
@@ -24,7 +25,7 @@ func TestUserRepositoryIntegration(t *testing.T) {
 }
 
 func TestUserService(t *testing.T) {
-	r := NewRouter(gin.Default(), NewHandler(NewService(NewTestableUserRepository())), NewTestableAuthHandler())
+	r := NewRouter(gin.Default(), NewHandler(NewService(mocks.NewTestableUserRepository())), mocks.NewTestableAuthHandler())
 	r.Configure()
 	router := r.Engine()
 	rr := httptest.NewRecorder()
@@ -33,57 +34,18 @@ func TestUserService(t *testing.T) {
 		req, _ := http.NewRequest("GET", "/user/david@federnet.com", nil)
 		router.ServeHTTP(rr, req)
 
-		var u User
+		var u models.User
 		err := json.NewDecoder(rr.Body).Decode(&u)
 		if err != nil {
 			t.Fatal(err)
 		}
 
 		assert.Equal(t, 200, rr.Code)
-		assert.Equal(t, User{
+		assert.Equal(t, models.User{
 			ID:    "1",
 			Name:  "Buddy",
 			Email: "david@federnet.com",
 			Role:  0,
 		}, u)
 	})
-}
-
-type testableUserRepository struct{}
-
-func (t testableUserRepository) GetByEmail(email string) (User, error) {
-	return User{
-		ID:    "1",
-		Name:  "Buddy",
-		Email: "david@federnet.com",
-		Role:  0,
-	}, nil
-}
-
-func NewTestableUserRepository() Repository {
-	return &testableUserRepository{}
-}
-
-type testableAuthHandler struct{}
-
-func (t testableAuthHandler) CurrentUser(c *gin.Context) {
-	panic("implement me")
-}
-
-func (t testableAuthHandler) Callback(c *gin.Context) {
-	panic("implement me")
-}
-
-func (t testableAuthHandler) Logout(c *gin.Context) {
-	panic("implement me")
-}
-
-func (t testableAuthHandler) RequiresAuth(role auth.Role) gin.HandlerFunc {
-	return func(c *gin.Context) {
-		c.Next()
-	}
-}
-
-func NewTestableAuthHandler() auth.Handler {
-	return &testableAuthHandler{}
 }

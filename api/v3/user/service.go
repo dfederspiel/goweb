@@ -1,14 +1,16 @@
 package user
 
+import "rsi.com/go-training/models"
+
 type Service interface {
-	GetByEmail(email string) (User, error)
+	GetByEmail(email string) (models.User, error)
 }
 
 type service struct {
 	repo Repository
 }
 
-func (s service) GetByEmail(email string) (User, error) {
+func (s service) GetByEmail(email string) (models.User, error) {
 	return s.repo.GetByEmail(email)
 }
 

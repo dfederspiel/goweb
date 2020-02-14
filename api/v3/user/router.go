@@ -3,6 +3,7 @@ package user
 import (
 	"github.com/gin-gonic/gin"
 	"rsi.com/go-training/api/auth"
+	"rsi.com/go-training/models"
 )
 
 type Router interface {
@@ -22,7 +23,7 @@ func (r router) Engine() *gin.Engine {
 
 func (r router) Configure() {
 	r.engine.GET("/user", r.auth.CurrentUser)
-	r.engine.GET("/user/:email", r.auth.RequiresAuth(auth.RoleAdministrator), r.handler.GetByEmail)
+	r.engine.GET("/user/:email", r.auth.RequiresAuth(models.RoleAdministrator), r.handler.GetByEmail)
 }
 
 func NewRouter(r *gin.Engine, h Handler, a auth.Handler) Router {
