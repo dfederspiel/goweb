@@ -11,9 +11,9 @@ type repository struct {
 }
 
 func (r repository) GetByEmail(email string) (User, error) {
-	row := r.db.QueryRow("select id, role, email from users where email = ?", email)
+	row := r.db.QueryRow("select id, name, role, email from users where email = ?", email)
 	var u User
-	err := row.Scan(&u.ID, &u.Role, &u.Email)
+	err := row.Scan(&u.ID, &u.Name, &u.Role, &u.Email)
 	if err != nil {
 		return u, err
 	}

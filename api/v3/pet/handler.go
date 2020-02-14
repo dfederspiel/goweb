@@ -29,15 +29,19 @@ func (h handler) GetById(c *gin.Context) {
 
 func (h handler) Create(c *gin.Context) {
 	p := Pet{}
-	err := c.Bind(&p)
+	err := c.ShouldBindJSON(&p)
 	if err != nil {
-		c.Status(http.StatusInternalServerError)
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+	} else {
+		err = h.service.Create(&p)
+		if err != nil {
+			c.Status(http.StatusInternalServerError)
+		} else {
+			c.JSON(http.StatusOK, p)
+		}
 	}
-	err = h.service.Create(&p)
-	if err != nil {
-		c.Status(http.StatusInternalServerError)
-	}
-	c.JSON(http.StatusOK, p)
 }
 
 func (h handler) Update(c *gin.Context) {
