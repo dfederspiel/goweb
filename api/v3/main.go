@@ -23,9 +23,9 @@ func (a api) ConfigurePetRoutes(repo pet.Repository) {
 
 	a.engine.GET("/pets", petHandler.Get)
 	a.engine.GET("/pet/:id", petHandler.GetById)
-	a.engine.POST("/pet", a.authHandler.RequiresAuth(auth.AuthProfile{RoleRequired: auth.RoleAdministrator}), petHandler.Create)
-	a.engine.PUT("/pet/:id", a.authHandler.RequiresAuth(auth.AuthProfile{RoleRequired: auth.RoleAdministrator}), petHandler.Update)
-	a.engine.DELETE("/pet/:id", a.authHandler.RequiresAuth(auth.AuthProfile{RoleRequired: auth.RoleAdministrator}), petHandler.Delete)
+	a.engine.POST("/pet", a.authHandler.RequiresAuth(auth.RoleAdministrator), petHandler.Create)
+	a.engine.PUT("/pet/:id", a.authHandler.RequiresAuth(auth.RoleAdministrator), petHandler.Update)
+	a.engine.DELETE("/pet/:id", a.authHandler.RequiresAuth(auth.RoleAdministrator), petHandler.Delete)
 }
 
 func (a api) ConfigureUserRoutes(repo user.Repository) {
@@ -33,11 +33,11 @@ func (a api) ConfigureUserRoutes(repo user.Repository) {
 	userHandler := user.NewHandler(userService)
 
 	a.engine.GET("/user", a.authHandler.CurrentUser)
-	a.engine.GET("/user/:email", a.authHandler.RequiresAuth(auth.AuthProfile{RoleRequired: auth.RoleAdministrator}), userHandler.GetByEmail)
+	a.engine.GET("/user/:email", a.authHandler.RequiresAuth(auth.RoleAdministrator), userHandler.GetByEmail)
 }
 
 func NewApi(engine gin.IRouter, authHandler auth.Handler) Api {
 	group := engine.Group("/api/v3")
-	group.Use(authHandler.RequiresAuth(auth.AuthProfile{RoleRequired: auth.RoleBasicUser}))
+	group.Use(authHandler.RequiresAuth(auth.RoleAdministrator))
 	return &api{group, authHandler}
 }

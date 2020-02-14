@@ -14,7 +14,7 @@ type Handler interface {
 	CurrentUser(c *gin.Context)
 	Callback(c *gin.Context)
 	Logout(c *gin.Context)
-	RequiresAuth(profile AuthProfile) gin.HandlerFunc
+	RequiresAuth(role Role) gin.HandlerFunc
 }
 
 type handler struct {
@@ -26,7 +26,7 @@ func (h handler) CurrentUser(c *gin.Context) {
 	c.JSON(http.StatusOK, user)
 }
 
-func (h handler) RequiresAuth(profile AuthProfile) gin.HandlerFunc {
+func (h handler) RequiresAuth(role Role) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		token, err := getToken(c)
 
@@ -48,7 +48,7 @@ func (h handler) RequiresAuth(profile AuthProfile) gin.HandlerFunc {
 			respondWithError(c, http.StatusUnauthorized, err.Error())
 		}
 
-		if user.Role > profile.RoleRequired {
+		if user.Role > role {
 			respondWithError(c, http.StatusUnauthorized, "user does not have privileges to perform this action")
 		}
 
