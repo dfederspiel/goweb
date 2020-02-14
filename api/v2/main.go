@@ -35,11 +35,11 @@ func ConfigurePetRoutes(db *sql.DB, group *gin.RouterGroup, authHandler auth.Han
 	petService := pet.NewService(petRepo)
 	petHandler := pet.NewHandler(petService)
 
-	group.Use(authHandler.RequiresAuth(auth.AuthProfile{RoleRequired: auth.RoleBasicUser}))
+	group.Use(authHandler.RequiresAuth(auth.RoleBasicUser))
 
 	group.GET("/pets", petHandler.Get)
 	group.GET("/pet/:id", petHandler.GetById)
-	group.POST("/pet", authHandler.RequiresAuth(auth.AuthProfile{RoleRequired: auth.RoleAdministrator}), petHandler.Create)
-	group.PUT("/pet/:id", authHandler.RequiresAuth(auth.AuthProfile{RoleRequired: auth.RoleAdministrator}), petHandler.Update)
-	group.DELETE("/pet/:id", authHandler.RequiresAuth(auth.AuthProfile{RoleRequired: auth.RoleAdministrator}), petHandler.Delete)
+	group.POST("/pet", authHandler.RequiresAuth(auth.RoleAdministrator), petHandler.Create)
+	group.PUT("/pet/:id", authHandler.RequiresAuth(auth.RoleAdministrator), petHandler.Update)
+	group.DELETE("/pet/:id", authHandler.RequiresAuth(auth.RoleAdministrator), petHandler.Delete)
 }
