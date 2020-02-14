@@ -1,6 +1,8 @@
 package pet
 
-import "database/sql"
+import (
+	"database/sql"
+)
 
 type Pet struct {
 	Id    int64  `json:"id"`

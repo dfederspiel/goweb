@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"rsi.com/go-training/models"
 	"time"
 )
 
@@ -14,7 +15,7 @@ type Handler interface {
 	CurrentUser(c *gin.Context)
 	Callback(c *gin.Context)
 	Logout(c *gin.Context)
-	RequiresAuth(profile AuthProfile) gin.HandlerFunc
+	RequiresAuth(role models.Role) gin.HandlerFunc
 }
 
 type handler struct {
@@ -26,7 +27,7 @@ func (h handler) CurrentUser(c *gin.Context) {
 	c.JSON(http.StatusOK, user)
 }
 
-func (h handler) RequiresAuth(profile AuthProfile) gin.HandlerFunc {
+func (h handler) RequiresAuth(role models.Role) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		token, err := getToken(c)
 
@@ -48,7 +49,7 @@ func (h handler) RequiresAuth(profile AuthProfile) gin.HandlerFunc {
 			respondWithError(c, http.StatusUnauthorized, err.Error())
 		}
 
-		if user.Role > profile.RoleRequired {
+		if user.Role > role {
 			respondWithError(c, http.StatusUnauthorized, "user does not have privileges to perform this action")
 		}
 
@@ -62,7 +63,7 @@ func (h handler) Callback(c *gin.Context) {
 		panic("add oidc.json file from google credentials")
 	}
 
-	var oidcSettings OIDCSettings
+	var oidcSettings models.OIDCSettings
 	err = json.Unmarshal(settings, &oidcSettings)
 	if err != nil {
 		panic("error parsing oidc.json file")
@@ -77,8 +78,8 @@ func (h handler) Callback(c *gin.Context) {
 		"grant_type":    {"authorization_code"},
 	}
 	response, _ := http.PostForm(s.TokenUri, formData)
-	var authResponse AuthResponse
-	getJson(response, &authResponse)
+	var authResponse models.AuthResponse
+	json.NewDecoder(response.Body).Decode(&authResponse)
 	http.SetCookie(c.Writer, &http.Cookie{
 		Name:     "token",
 		Value:    authResponse.IdToken,

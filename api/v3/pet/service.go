@@ -1,31 +1,36 @@
 package pet
 
+import (
+	"rsi.com/go-training/interfaces"
+	"rsi.com/go-training/models"
+)
+
 type Service interface {
-	GetAll() ([]*Pet, error)
-	GetById(id string) (*Pet, error)
-	Create(pet *Pet) (err error)
-	Update(pet *Pet) (err error)
+	GetAll() ([]*models.Pet, error)
+	GetById(id string) (*models.Pet, error)
+	Create(pet *models.Pet) (err error)
+	Update(pet *models.Pet) (err error)
 	DeleteById(id string) (err error)
 }
 
 type service struct {
-	repo Repository
+	repo interfaces.PetRepository
 }
 
-func (s service) GetAll() ([]*Pet, error) {
+func (s service) GetAll() ([]*models.Pet, error) {
 	return s.repo.GetAll()
 }
 
-func (s service) GetById(id string) (*Pet, error) {
+func (s service) GetById(id string) (*models.Pet, error) {
 	return s.repo.GetById(id)
 }
 
-func (s service) Create(pet *Pet) (err error) {
+func (s service) Create(pet *models.Pet) (err error) {
 	err = s.repo.Create(pet)
 	return
 }
 
-func (s service) Update(pet *Pet) (err error) {
+func (s service) Update(pet *models.Pet) (err error) {
 	err = s.repo.Update(pet)
 	return
 }
@@ -35,7 +40,7 @@ func (s service) DeleteById(id string) (err error) {
 	return
 }
 
-func NewService(repo Repository) Service {
+func NewService(repo interfaces.PetRepository) Service {
 	return &service{
 		repo,
 	}

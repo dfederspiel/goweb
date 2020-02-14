@@ -7,6 +7,7 @@ import (
 	"rsi.com/go-training/api/auth"
 	"rsi.com/go-training/api/v2/pet"
 	"rsi.com/go-training/api/v2/user"
+	"rsi.com/go-training/models"
 )
 
 func Register(db *sql.DB, engine *gin.Engine, authHandler auth.Handler) {
@@ -35,11 +36,11 @@ func ConfigurePetRoutes(db *sql.DB, group *gin.RouterGroup, authHandler auth.Han
 	petService := pet.NewService(petRepo)
 	petHandler := pet.NewHandler(petService)
 
-	group.Use(authHandler.RequiresAuth(auth.AuthProfile{RoleRequired: auth.RoleBasicUser}))
+	group.Use(authHandler.RequiresAuth(models.RoleBasicUser))
 
 	group.GET("/pets", petHandler.Get)
 	group.GET("/pet/:id", petHandler.GetById)
-	group.POST("/pet", authHandler.RequiresAuth(auth.AuthProfile{RoleRequired: auth.RoleAdministrator}), petHandler.Create)
-	group.PUT("/pet/:id", authHandler.RequiresAuth(auth.AuthProfile{RoleRequired: auth.RoleAdministrator}), petHandler.Update)
-	group.DELETE("/pet/:id", authHandler.RequiresAuth(auth.AuthProfile{RoleRequired: auth.RoleAdministrator}), petHandler.Delete)
+	group.POST("/pet", authHandler.RequiresAuth(models.RoleAdministrator), petHandler.Create)
+	group.PUT("/pet/:id", authHandler.RequiresAuth(models.RoleAdministrator), petHandler.Update)
+	group.DELETE("/pet/:id", authHandler.RequiresAuth(models.RoleAdministrator), petHandler.Delete)
 }

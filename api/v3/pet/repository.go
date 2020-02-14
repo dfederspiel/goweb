@@ -4,22 +4,16 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"rsi.com/go-training/interfaces"
+	"rsi.com/go-training/models"
 	"strconv"
 )
-
-type Repository interface {
-	GetAll() (pets []*Pet, err error)
-	GetById(id string) (pet *Pet, err error)
-	Create(pet *Pet) (err error)
-	Update(pet *Pet) (err error)
-	DeleteById(id string) (err error)
-}
 
 type repository struct {
 	db *sql.DB
 }
 
-func (repo repository) GetAll() (pets []*Pet, err error) {
+func (repo repository) GetAll() (pets []*models.Pet, err error) {
 	rows, err := repo.db.Query("select id, name, age, color from pets")
 	if err != nil {
 		return nil, err
@@ -27,7 +21,7 @@ func (repo repository) GetAll() (pets []*Pet, err error) {
 	defer rows.Close()
 
 	for rows.Next() {
-		var p Pet
+		var p models.Pet
 		err = rows.Scan(&p.ID, &p.Name, &p.Age, &p.Color)
 		if err != nil {
 			return nil, err
@@ -37,9 +31,9 @@ func (repo repository) GetAll() (pets []*Pet, err error) {
 	return
 }
 
-func (repo repository) GetById(id string) (pet *Pet, err error) {
+func (repo repository) GetById(id string) (pet *models.Pet, err error) {
 	row := repo.db.QueryRow("select id, name, age, color from pets where id = ?", id)
-	pet = &Pet{}
+	pet = &models.Pet{}
 	err = row.Scan(&pet.ID, &pet.Name, &pet.Age, &pet.Color)
 	if err != nil {
 		log.Println(err)
@@ -47,7 +41,7 @@ func (repo repository) GetById(id string) (pet *Pet, err error) {
 	return
 }
 
-func (repo repository) Create(pet *Pet) (err error) {
+func (repo repository) Create(pet *models.Pet) (err error) {
 	statement, _ := repo.db.Prepare("insert into pets (name, age, color, legs) values (?,?,?, true)")
 	defer statement.Close()
 	result, err := statement.Exec(pet.Name, pet.Age, pet.Color, pet.Legs)
@@ -60,7 +54,7 @@ func (repo repository) Create(pet *Pet) (err error) {
 	return nil
 }
 
-func (repo repository) Update(pet *Pet) (err error) {
+func (repo repository) Update(pet *models.Pet) (err error) {
 	statement, _ := repo.db.Prepare("update pets set name=?, age=?, legs=?, color=? where id=?")
 	defer statement.Close()
 	result, err := statement.Exec(pet.Name, pet.Age, pet.Legs, pet.Color, pet.ID)
@@ -86,6 +80,6 @@ func (repo repository) DeleteById(id string) (err error) {
 
 // NewRepository returns a Repository interface of unexported type repository, which implements all methods of the interface.
 // It is important to understand the sleight of hand here
-func NewRepository(db *sql.DB) Repository {
+func NewRepository(db *sql.DB) interfaces.PetRepository {
 	return &repository{db}
 }

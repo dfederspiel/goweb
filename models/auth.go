@@ -1,23 +1,7 @@
-package auth
+package models
 
 import (
-	"encoding/json"
 	"github.com/dgrijalva/jwt-go"
-	"net/http"
-)
-
-type User struct {
-	ID    string `json:"id"`
-	Name  string `json:"name"`
-	Email string `json:"email"`
-	Role  Role   `json:"role"`
-}
-
-type Role int
-
-const (
-	RoleAdministrator Role = iota
-	RoleBasicUser
 )
 
 type AuthProfile struct {
@@ -53,9 +37,4 @@ type AuthResponse struct {
 	TokenType   string `json:"token_type"`
 	IdToken     string `json:"id_token"`
 	State       string `json:"session_state"`
-}
-
-func getJson(r *http.Response, target interface{}) error {
-	defer r.Body.Close()
-	return json.NewDecoder(r.Body).Decode(target)
 }
