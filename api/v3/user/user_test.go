@@ -1,11 +1,8 @@
 package user
 
 import (
-	"database/sql"
 	"encoding/json"
-	"fmt"
 	"github.com/gin-gonic/gin"
-	_ "github.com/mattn/go-sqlite3"
 	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
@@ -13,16 +10,6 @@ import (
 	"rsi.com/go-training/models"
 	"testing"
 )
-
-func TestUserRepositoryIntegration(t *testing.T) {
-	db, err := sql.Open("sqlite3", "../../../data/goweb.db")
-	fmt.Println(err)
-	repo := NewRepository(db)
-	t.Run("get by email", func(t *testing.T) {
-		user, _ := repo.GetByEmail("david@federnet.com")
-		fmt.Println(user)
-	})
-}
 
 func TestUserService(t *testing.T) {
 	r := NewRouter(gin.Default(), NewHandler(NewService(mocks.NewTestableUserRepository())), mocks.NewTestableAuthHandler())

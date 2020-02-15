@@ -1,6 +1,8 @@
 package interfaces
 
-import "rsi.com/go-training/models"
+import (
+	"rsi.com/go-training/models"
+)
 
 type PetRepository interface {
 	GetAll() (pets []*models.Pet, err error)

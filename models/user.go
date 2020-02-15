@@ -13,5 +13,3 @@ const (
 	RoleAdministrator Role = iota
 	RoleBasicUser
 )
-
-func init() {}

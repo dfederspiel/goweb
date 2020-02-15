@@ -36,12 +36,9 @@ func (h handler) Create(c *gin.Context) {
 			"error": err.Error(),
 		})
 	} else {
-		err = h.service.Create(&p)
-		if err != nil {
-			c.Status(http.StatusInternalServerError)
-		} else {
-			c.JSON(http.StatusOK, p)
-		}
+		h.service.Create(&p)
+		c.JSON(http.StatusOK, p)
+
 	}
 }
 
@@ -50,20 +47,13 @@ func (h handler) Update(c *gin.Context) {
 	p.ID = c.Param("id")
 	_ = c.BindJSON(&p)
 
-	err := h.service.Update(&p)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, err)
-	} else {
-		c.Status(http.StatusOK)
-	}
+	h.service.Update(&p)
+	c.Status(http.StatusOK)
 }
 
 func (h handler) Delete(c *gin.Context) {
 	id := c.Param("id")
-	err := h.service.DeleteById(id)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, err)
-	}
+	h.service.DeleteById(id)
 	c.Status(http.StatusOK)
 }
 
