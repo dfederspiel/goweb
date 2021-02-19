@@ -62,7 +62,6 @@
         "lodash": "^4.17.19",
         "node-sass": "^4.13.1",
         "path": "^0.12.7",
-        "puppeteer": "^1.20.0",
         "quicktype": "^15.0.202",
         "react-test-renderer": "^16.10.2",
         "sentence-generator": "^1.0.1",
