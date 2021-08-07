@@ -6,9 +6,9 @@ Documentation originally in PDF format
 ## Setup
 
 1. `go install` to install all go dependencies
-2. `cd frontend` 
+2. `cd www` 
 3. `npm install` to install all frontend dependencies
-4. `gulp build` to bundle frontend to be served statically in go
+4. `npm run build` to bundle frontend to be served statically in go
 
 ## Staring up
 1. `go run .` to run the app ("`.`" is all-inclusive and will run main.go & server.go)
