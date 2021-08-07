@@ -10,6 +10,6 @@ Documentation originally in PDF format
 3. `npm install` to install all frontend dependencies
 4. `npm run build` to bundle frontend to be served statically in go
 
-## Staring up
+## Running the App
 1. `go run .` to run the app ("`.`" is all-inclusive and will run main.go & server.go)
 2. `http://localhost:8080` to view the running site.
