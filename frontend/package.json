@@ -32,7 +32,7 @@
         "child_process": "^1.0.2",
         "colors": "^1.4.0",
         "expose-loader": "^0.7.5",
-        "express": "^4.16.4",
+        "express": "^4.17.3",
         "faker": "^4.1.0",
         "gulp": "^4.0.0",
         "gulp-autoprefixer": "^7.0.1",
